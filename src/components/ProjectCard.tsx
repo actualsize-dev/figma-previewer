@@ -5,6 +5,7 @@ import Link from 'next/link';
 import CopyLinkButton from './CopyLinkButton';
 import DeleteProjectButton from './DeleteProjectButton';
 import EditableClientLabel from './EditableClientLabel';
+import InlineEdit from './InlineEdit';
 
 type Project = {
   id: string;
@@ -18,22 +19,68 @@ type Project = {
 interface ProjectCardProps {
   project: Project;
   onProjectDeleted: (id: string) => void;
+  onProjectUpdated?: (updatedProject: Project) => void;
 }
 
-export default function ProjectCard({ project, onProjectDeleted }: ProjectCardProps) {
+export default function ProjectCard({ project, onProjectDeleted, onProjectUpdated }: ProjectCardProps) {
   const [currentProject, setCurrentProject] = useState(project);
 
   const handleLabelUpdate = (newLabel: string) => {
     setCurrentProject(prev => ({ ...prev, clientLabel: newLabel }));
   };
 
+  const handleNameUpdate = async (newName: string) => {
+    try {
+      const response = await fetch(`/api/projects/${currentProject.id}/rename`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newName }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to rename project');
+      }
+
+      const result = await response.json();
+      const updatedProject = {
+        ...currentProject,
+        name: result.project.name,
+        slug: result.project.slug
+      };
+      
+      setCurrentProject(updatedProject);
+      
+      if (onProjectUpdated) {
+        onProjectUpdated(updatedProject);
+      }
+
+      // Show success message if slug changed
+      if (result.oldSlug !== result.newSlug) {
+        alert(`Project renamed successfully! URL updated to: actualsize.digital/${result.newSlug}`);
+      }
+    } catch (error) {
+      console.error('Error renaming project:', error);
+      alert(error instanceof Error ? error.message : 'Failed to rename project');
+      throw error; // Re-throw to let InlineEdit handle the error state
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
       <div className="p-6">
         <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-semibold text-gray-900">
-            {currentProject.name}
-          </h3>
+          <div className="flex-1 mr-4">
+            <InlineEdit
+              value={currentProject.name}
+              onSave={handleNameUpdate}
+              className="text-lg font-semibold text-gray-900 block w-full"
+              inputClassName="text-lg font-semibold w-full"
+              placeholder="Project name..."
+            />
+          </div>
           <EditableClientLabel
             projectId={currentProject.id}
             currentLabel={currentProject.clientLabel || 'Uncategorized'}

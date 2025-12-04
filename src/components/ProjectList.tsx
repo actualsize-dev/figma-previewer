@@ -9,6 +9,7 @@ type Project = {
   name: string;
   slug: string;
   figmaUrl: string;
+  clientLabel?: string;
   createdAt: string;
 };
 
@@ -30,6 +31,14 @@ export default function ProjectList({ initialProjects }: ProjectListProps) {
     );
   };
 
+  const handleProjectUpdated = (updatedProject: Project) => {
+    setProjects(prevProjects => 
+      prevProjects.map(project => 
+        project.id === updatedProject.id ? updatedProject : project
+      )
+    );
+  };
+
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       <AnimatePresence mode="popLayout">
@@ -48,6 +57,7 @@ export default function ProjectList({ initialProjects }: ProjectListProps) {
             <ProjectCard
               project={project}
               onProjectDeleted={handleProjectDeleted}
+              onProjectUpdated={handleProjectUpdated}
             />
           </motion.div>
         ))}

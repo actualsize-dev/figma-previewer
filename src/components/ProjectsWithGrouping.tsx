@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import ProjectList from './ProjectList';
+import InlineEdit from './InlineEdit';
 
 type Project = {
   id: string;
@@ -20,14 +21,15 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
   const [selectedClient, setSelectedClient] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date' | 'client'>('date');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [projectsList, setProjectsList] = useState<Project[]>(projects);
 
   // Group projects by client (with search filter applied)
   const projectsByClient = useMemo(() => {
-    let filteredProjects = projects;
+    let filteredProjects = projectsList;
     
     // Apply search filter first
     if (searchTerm.trim()) {
-      filteredProjects = projects.filter(p => 
+      filteredProjects = projectsList.filter(p => 
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (p.clientLabel && p.clientLabel.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -50,13 +52,13 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
     });
 
     return groups;
-  }, [projects, searchTerm]);
+  }, [projectsList, searchTerm]);
 
   const clientLabels = Object.keys(projectsByClient).sort();
 
   // Filter and sort projects
   const displayedProjects = useMemo(() => {
-    let filtered = projects;
+    let filtered = projectsList;
 
     // Apply search filter
     if (searchTerm.trim()) {
@@ -86,7 +88,41 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
     }
 
     return filtered;
-  }, [projects, selectedClient, sortBy, searchTerm]);
+  }, [projectsList, selectedClient, sortBy, searchTerm]);
+
+  const handleClientRename = async (oldClientName: string, newClientName: string) => {
+    try {
+      const response = await fetch('/api/projects/clients/rename', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          oldClientLabel: oldClientName, 
+          newClientLabel: newClientName 
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to rename client category');
+      }
+
+      // Update local state to reflect the change
+      setProjectsList(prevProjects => 
+        prevProjects.map(project => 
+          project.clientLabel === oldClientName 
+            ? { ...project, clientLabel: newClientName }
+            : project
+        )
+      );
+
+    } catch (error) {
+      console.error('Error renaming client category:', error);
+      alert(error instanceof Error ? error.message : 'Failed to rename client category');
+      throw error;
+    }
+  };
 
   const groupedView = sortBy === 'client' && selectedClient === 'all';
 
@@ -147,7 +183,17 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
           clientLabels.map(client => (
             <div key={client} className="space-y-4">
               <div className="flex items-center space-x-3">
-                <h2 className="text-xl font-semibold text-gray-900">{client}</h2>
+                {client === 'Uncategorized' ? (
+                  <h2 className="text-xl font-semibold text-gray-900">{client}</h2>
+                ) : (
+                  <InlineEdit
+                    value={client}
+                    onSave={(newName) => handleClientRename(client, newName)}
+                    className="text-xl font-semibold text-gray-900"
+                    inputClassName="text-xl font-semibold"
+                    placeholder="Client category name..."
+                  />
+                )}
                 <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
                   {projectsByClient[client].length} project{projectsByClient[client].length !== 1 ? 's' : ''}
                 </span>
