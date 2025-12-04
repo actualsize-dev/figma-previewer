@@ -7,9 +7,7 @@ export async function GET() {
       where: {
         deletedAt: null,
         clientLabel: {
-          not: null,
-          not: '',
-          not: 'Uncategorized'
+          notIn: [null, '', 'Uncategorized']
         }
       },
       select: {
