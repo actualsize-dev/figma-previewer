@@ -92,3 +92,5 @@ export const metadata = {
   title: 'Deleted Projects | actualsize.digital',
   description: 'Restore deleted prototype projects',
 };
+
+export const dynamic = 'force-dynamic';

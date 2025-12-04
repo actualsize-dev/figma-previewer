@@ -92,3 +92,5 @@ export const metadata = {
   title: 'All Projects | actualsize.digital',
   description: 'Browse all created prototype pages',
 };
+
+export const dynamic = 'force-dynamic';
