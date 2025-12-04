@@ -6,11 +6,13 @@ export async function GET() {
     const projects = await prisma.project.findMany({
       where: {
         deletedAt: null,
-        AND: [
-          { clientLabel: { isSet: true } },
-          { clientLabel: { not: '' } },
-          { clientLabel: { not: 'Uncategorized' } }
-        ]
+        NOT: {
+          OR: [
+            { clientLabel: '' },
+            { clientLabel: 'Uncategorized' },
+            { clientLabel: null }
+          ]
+        }
       },
       select: {
         clientLabel: true
