@@ -78,7 +78,10 @@ export default async function ProjectsPage() {
             </Link>
           </div>
         ) : (
-          <ProjectsWithGrouping projects={projects} />
+          <ProjectsWithGrouping projects={projects.map(project => ({
+            ...project,
+            createdAt: project.createdAt.toISOString()
+          }))} />
         )}
       </div>
     </div>

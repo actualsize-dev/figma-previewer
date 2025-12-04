@@ -77,7 +77,11 @@ export default async function DeletedProjectsPage() {
             </Link>
           </div>
         ) : (
-          <DeletedProjectList initialDeletedProjects={deletedProjects} />
+          <DeletedProjectList initialDeletedProjects={deletedProjects.map(project => ({
+            ...project,
+            createdAt: project.createdAt.toISOString(),
+            deletedAt: project.deletedAt?.toISOString() || ''
+          }))} />
         )}
       </div>
     </div>
