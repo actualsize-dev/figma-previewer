@@ -7,7 +7,7 @@ export async function GET() {
       where: {
         deletedAt: null,
         AND: [
-          { clientLabel: { not: null } },
+          { clientLabel: { isSet: true } },
           { clientLabel: { not: '' } },
           { clientLabel: { not: 'Uncategorized' } }
         ]
