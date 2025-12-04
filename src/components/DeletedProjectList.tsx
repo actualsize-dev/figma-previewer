@@ -20,9 +20,9 @@ interface DeletedProjectListProps {
 export default function DeletedProjectList({ initialDeletedProjects }: DeletedProjectListProps) {
   const [deletedProjects, setDeletedProjects] = useState(initialDeletedProjects);
 
-  const handleProjectRestored = (restoredId: string) => {
+  const handleProjectRemoved = (removedId: string) => {
     setDeletedProjects(prevProjects => 
-      prevProjects.filter(project => project.id !== restoredId)
+      prevProjects.filter(project => project.id !== removedId)
     );
   };
 
@@ -37,13 +37,39 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
       }
 
       const result = await response.json();
-      handleProjectRestored(projectId);
+      handleProjectRemoved(projectId);
       
       // Show success message with link to restored project
       alert(`"${projectName}" has been restored! You can find it in your projects list.`);
     } catch (error) {
       console.error('Error restoring project:', error);
       alert('Failed to restore project. Please try again.');
+    }
+  };
+
+  const handlePermanentDelete = async (projectId: string, projectName: string) => {
+    const confirmMessage = `Are you sure you want to permanently delete "${projectName}"? This action cannot be undone and will free up the project name and URL for future use.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/projects/${projectId}/permanent-delete`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to permanently delete project');
+      }
+
+      const result = await response.json();
+      handleProjectRemoved(projectId);
+      
+      alert(`"${projectName}" has been permanently deleted. The project name and URL are now available for new projects.`);
+    } catch (error) {
+      console.error('Error permanently deleting project:', error);
+      alert('Failed to permanently delete project. Please try again.');
     }
   };
 
@@ -78,20 +104,28 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                   </div>
                 </div>
                 
-                <div className="flex space-x-2 ml-4">
-                  <a
-                    href={project.figmaUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors"
-                  >
-                    View in Figma
-                  </a>
+                <div className="flex flex-col space-y-2 ml-4">
+                  <div className="flex space-x-2">
+                    <a
+                      href={project.figmaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors"
+                    >
+                      View in Figma
+                    </a>
+                    <button
+                      onClick={() => handleRestore(project.id, project.name)}
+                      className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
+                    >
+                      Restore Project
+                    </button>
+                  </div>
                   <button
-                    onClick={() => handleRestore(project.id, project.name)}
-                    className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
+                    onClick={() => handlePermanentDelete(project.id, project.name)}
+                    className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors text-left"
                   >
-                    Restore Project
+                    Permanently Delete
                   </button>
                 </div>
               </div>
