@@ -1,0 +1,120 @@
+'use client';
+
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import Link from 'next/link';
+
+type DeletedProject = {
+  id: string;
+  name: string;
+  slug: string;
+  figmaUrl: string;
+  createdAt: string;
+  deletedAt: string;
+};
+
+interface DeletedProjectListProps {
+  initialDeletedProjects: DeletedProject[];
+}
+
+export default function DeletedProjectList({ initialDeletedProjects }: DeletedProjectListProps) {
+  const [deletedProjects, setDeletedProjects] = useState(initialDeletedProjects);
+
+  const handleProjectRestored = (restoredId: string) => {
+    setDeletedProjects(prevProjects => 
+      prevProjects.filter(project => project.id !== restoredId)
+    );
+  };
+
+  const handleRestore = async (projectId: string, projectName: string) => {
+    try {
+      const response = await fetch(`/api/projects/${projectId}/restore`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to restore project');
+      }
+
+      const result = await response.json();
+      handleProjectRestored(projectId);
+      
+      // Show success message with link to restored project
+      alert(`"${projectName}" has been restored! You can find it in your projects list.`);
+    } catch (error) {
+      console.error('Error restoring project:', error);
+      alert('Failed to restore project. Please try again.');
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <AnimatePresence mode="popLayout">
+        {deletedProjects.map((project) => (
+          <motion.div
+            key={project.id}
+            layout
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ 
+              duration: 0.3,
+              layout: { duration: 0.4 }
+            }}
+            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+          >
+            <div className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    {project.name}
+                  </h3>
+                  <div className="space-y-1 text-sm text-gray-500 mb-4">
+                    <p>Created {new Date(project.createdAt).toLocaleDateString()}</p>
+                    <p>Deleted {new Date(project.deletedAt).toLocaleDateString()}</p>
+                    <p className="font-mono text-xs text-gray-400">
+                      actualsize.digital/{project.slug}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex space-x-2 ml-4">
+                  <a
+                    href={project.figmaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors"
+                  >
+                    View in Figma
+                  </a>
+                  <button
+                    onClick={() => handleRestore(project.id, project.name)}
+                    className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
+                  >
+                    Restore Project
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+      
+      {deletedProjects.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-8"
+        >
+          <p className="text-gray-500 mb-4">All deleted projects have been restored!</p>
+          <Link
+            href="/projects"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Back to Projects
+          </Link>
+        </motion.div>
+      )}
+    </div>
+  );
+}
