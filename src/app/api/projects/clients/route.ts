@@ -5,27 +5,18 @@ export async function GET() {
   try {
     const projects = await prisma.project.findMany({
       where: {
-        deletedAt: null,
-        clientLabel: {
-          not: null
-        },
-        NOT: {
-          OR: [
-            { clientLabel: '' },
-            { clientLabel: 'Uncategorized' }
-          ]
-        }
+        deletedAt: null
       },
       select: {
         clientLabel: true
-      },
-      distinct: ['clientLabel']
+      }
     });
     
     // Extract and sort unique client labels
-    const clients = projects
-      .map((p: { clientLabel: string }) => p.clientLabel)
-      .filter((label: string | null) => label && label !== 'Uncategorized')
+    const allLabels = projects.map(p => p.clientLabel);
+    const uniqueLabels = [...new Set(allLabels)];
+    const clients = uniqueLabels
+      .filter(label => label && label !== '' && label !== 'Uncategorized')
       .sort();
     
     return NextResponse.json({ clients });
