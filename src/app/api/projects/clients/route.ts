@@ -18,8 +18,8 @@ export async function GET() {
     
     // Extract and sort unique client labels
     const clients = projects
-      .map(p => p.clientLabel)
-      .filter(label => label && label !== 'Uncategorized')
+      .map((p: { clientLabel: string }) => p.clientLabel)
+      .filter((label: string | null) => label && label !== 'Uncategorized')
       .sort();
     
     return NextResponse.json({ clients });
