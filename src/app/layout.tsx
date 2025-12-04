@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Figma Prototype Host | actualsize.digital",
+  title: "Figma Concierge | actualsize.digital",
   description: "Create custom pages for your Figma prototypes with full-screen immersive experience",
   keywords: ["figma", "prototype", "hosting", "design", "actualsize"],
   authors: [{ name: "actualsize.digital" }],

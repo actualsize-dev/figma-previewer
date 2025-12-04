@@ -1,4 +1,4 @@
-# Figma Prototype Host
+# Figma Concierge
 
 A Next.js application for hosting Figma prototypes on custom subdomain pages.
 
