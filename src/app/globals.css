@@ -44,18 +44,18 @@
   --ds-blue-700: #0051cc;
   
   /* Client category colors */
-  --ds-category-blue-bg: #e6f7ff;
-  --ds-category-blue-text: #0070f3;
-  --ds-category-orange-bg: #fff4e6;
-  --ds-category-orange-text: #ff8c00;
-  --ds-category-green-bg: #e6ffe6;
-  --ds-category-green-text: #00a86b;
-  --ds-category-purple-bg: #f3e6ff;
-  --ds-category-purple-text: #8b5cf6;
-  --ds-category-pink-bg: #ffe6f7;
-  --ds-category-pink-text: #e91e63;
-  --ds-category-teal-bg: #e6fffa;
-  --ds-category-teal-text: #14b8a6;
+  --ds-category-blue-bg: #0070f3;
+  --ds-category-blue-text: #ffffff;
+  --ds-category-orange-bg: #ff8c00;
+  --ds-category-orange-text: #ffffff;
+  --ds-category-green-bg: #00a86b;
+  --ds-category-green-text: #ffffff;
+  --ds-category-purple-bg: #8b5cf6;
+  --ds-category-purple-text: #ffffff;
+  --ds-category-pink-bg: #e91e63;
+  --ds-category-pink-text: #ffffff;
+  --ds-category-teal-bg: #14b8a6;
+  --ds-category-teal-text: #ffffff;
   
   /* Semantic Colors */
   --ds-success: #00a86b;
@@ -116,18 +116,18 @@
   --ds-card-hover-border: #606060;
   
   /* Dark mode client category colors */
-  --ds-category-blue-bg: #1e3a8a;
-  --ds-category-blue-text: #60a5fa;
-  --ds-category-orange-bg: #9a3412;
-  --ds-category-orange-text: #fb923c;
-  --ds-category-green-bg: #166534;
-  --ds-category-green-text: #4ade80;
-  --ds-category-purple-bg: #581c87;
-  --ds-category-purple-text: #a78bfa;
-  --ds-category-pink-bg: #9f1239;
-  --ds-category-pink-text: #f472b6;
-  --ds-category-teal-bg: #0f766e;
-  --ds-category-teal-text: #5eead4;
+  --ds-category-blue-bg: #0070f3;
+  --ds-category-blue-text: #ffffff;
+  --ds-category-orange-bg: #ff8c00;
+  --ds-category-orange-text: #ffffff;
+  --ds-category-green-bg: #00a86b;
+  --ds-category-green-text: #ffffff;
+  --ds-category-purple-bg: #8b5cf6;
+  --ds-category-purple-text: #ffffff;
+  --ds-category-pink-bg: #e91e63;
+  --ds-category-pink-text: #ffffff;
+  --ds-category-teal-bg: #14b8a6;
+  --ds-category-teal-text: #ffffff;
   
   --background: var(--ds-background-100);
   --foreground: var(--ds-text-10);
