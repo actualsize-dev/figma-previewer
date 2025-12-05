@@ -63,6 +63,7 @@
   --accent-foreground: var(--ds-text-10);
   --card: var(--ds-background-100);
   --card-foreground: var(--ds-text-10);
+  --ds-outline-hover: #ebebeb;
   --radius: 6px;
 }
 
@@ -96,6 +97,8 @@
   --ds-text-9: #888888;
   --ds-text-10: #ffffff;
   
+  --ds-outline-hover: #2a2a2a;
+  
   --background: var(--ds-background-100);
   --foreground: var(--ds-text-10);
   --muted: var(--ds-background-200);
@@ -127,6 +130,7 @@
     --ds-border-4: #1a1a1a;
     --ds-border-5: #262626;
     --ds-border-6: #404040;
+    --ds-outline-hover: #2a2a2a;
     
     --background: var(--ds-background-100);
     --foreground: var(--ds-text-10);
@@ -242,7 +246,7 @@ body {
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: var(--ds-color-2);
+  background: var(--ds-outline-hover);
   color: var(--ds-text-10);
   border-color: var(--ds-border-6);
 }
@@ -255,6 +259,6 @@ body {
 
 .btn-destructive:hover:not(:disabled) {
   background: #dc2626;
-  color: white;
+  color: black;
   border-color: #dc2626;
 }
