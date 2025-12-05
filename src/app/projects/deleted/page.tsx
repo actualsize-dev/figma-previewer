@@ -35,58 +35,79 @@ export default async function DeletedProjectsPage() {
   const deletedProjects = await getDeletedProjects();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="flex-1 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Deleted Projects
-            </h1>
-            <p className="text-gray-600">
-              Restore projects that have been deleted
-            </p>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Vercel-style header */}
+      <header className="border-b border-border bg-card">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-8">
+              <Link href="/" className="text-xl font-semibold text-foreground hover:text-muted-foreground transition-colors">
+                Figma Concierge
+              </Link>
+              <nav className="flex items-center space-x-6">
+                <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Projects</Link>
+                <span className="text-sm font-medium text-foreground">Deleted</span>
+              </nav>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/projects"
+                className="btn btn-ghost text-sm"
+              >
+                ← Back to Projects
+              </Link>
+            </div>
           </div>
+        </div>
+      </header>
 
-          <div className="mb-6 flex justify-between items-center">
-            <Link
-              href="/projects"
-              className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
-            >
-              ← Back to Projects
-            </Link>
-            
-            {deletedProjects.length > 0 && (
-              <p className="text-sm text-gray-500">
-                {deletedProjects.length} deleted project{deletedProjects.length !== 1 ? 's' : ''}
-              </p>
-            )}
-          </div>
-
+      {/* Main content */}
+      <main className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {deletedProjects.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🗑️</div>
-              <h3 className="text-xl font-medium text-gray-900 mb-2">
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 No deleted projects
               </h3>
-              <p className="text-gray-600 mb-6">
-                Projects you delete will appear here for restoration
+              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                Projects you delete will appear here for restoration. You can always restore them later or permanently delete them.
               </p>
               <Link
                 href="/projects"
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="btn btn-primary"
               >
                 Back to Projects
               </Link>
             </div>
           ) : (
-            <DeletedProjectList initialDeletedProjects={deletedProjects.map(project => ({
-              ...project,
-              createdAt: project.createdAt.toISOString(),
-              deletedAt: project.deletedAt?.toISOString() || ''
-            }))} />
+            <div className="space-y-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-2xl font-semibold text-foreground">Deleted Projects</h1>
+                  <p className="text-muted-foreground mt-1">
+                    Restore or permanently delete projects
+                  </p>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {deletedProjects.length} deleted project{deletedProjects.length !== 1 ? 's' : ''}
+                </div>
+              </div>
+              
+              <DeletedProjectList initialDeletedProjects={deletedProjects.map(project => ({
+                ...project,
+                createdAt: project.createdAt.toISOString(),
+                deletedAt: project.deletedAt?.toISOString() || ''
+              }))} />
+            </div>
           )}
         </div>
-      </div>
+      </main>
+
       <BrandingFooter />
     </div>
   );
