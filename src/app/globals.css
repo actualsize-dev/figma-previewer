@@ -309,3 +309,15 @@ body {
 .project-card:hover {
   border-color: var(--ds-card-hover-border);
 }
+
+/* Fix select dropdown arrow spacing */
+select {
+  padding-right: 2.5rem !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4L2 0zM2 5L0 3h4L2 5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.8rem;
+}
