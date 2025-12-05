@@ -93,16 +93,19 @@ export default function FigmaThumbnail({
   }
 
   return (
-    <img
-      src={thumbnailUrl}
-      alt={alt}
-      className={`rounded object-contain object-top bg-muted ${className}`}
-      loading="lazy"
-      onError={() => setError(true)}
-      style={{ 
-        objectFit: 'contain', 
-        objectPosition: 'top center' 
-      }}
-    />
+    <div className={`rounded bg-muted overflow-hidden ${className}`}>
+      <img
+        src={thumbnailUrl}
+        alt={alt}
+        className="w-full h-auto"
+        loading="lazy"
+        onError={() => setError(true)}
+        style={{ 
+          minHeight: '100%',
+          objectFit: 'cover',
+          objectPosition: 'top center'
+        }}
+      />
+    </div>
   );
 }
