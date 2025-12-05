@@ -49,7 +49,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Thumbnail generation error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate thumbnail', details: error.message },
+      { 
+        error: 'Failed to generate thumbnail', 
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
@@ -84,7 +87,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Thumbnail generation error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate thumbnail' },
+      { 
+        error: 'Failed to generate thumbnail',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
