@@ -96,9 +96,13 @@ export default function FigmaThumbnail({
     <img
       src={thumbnailUrl}
       alt={alt}
-      className={`rounded object-cover ${className}`}
+      className={`rounded object-contain object-top bg-muted ${className}`}
       loading="lazy"
       onError={() => setError(true)}
+      style={{ 
+        objectFit: 'contain', 
+        objectPosition: 'top center' 
+      }}
     />
   );
 }

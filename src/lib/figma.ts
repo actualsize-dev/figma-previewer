@@ -69,13 +69,25 @@ export async function generateFigmaThumbnail(
 
     const fileInfo = await fileInfoResponse.json();
     
-    // Find the first canvas (page) and its first frame
+    // Find the first canvas (page) and its best frame for thumbnail
     let nodeId = null;
     if (fileInfo.document?.children) {
       const firstCanvas = fileInfo.document.children[0];
       if (firstCanvas && firstCanvas.children && firstCanvas.children.length > 0) {
-        // Use the first frame/artboard as the thumbnail
-        nodeId = firstCanvas.children[0].id;
+        // Look for the largest frame (likely the main artboard)
+        let bestFrame = firstCanvas.children[0];
+        for (const child of firstCanvas.children) {
+          if (child.type === 'FRAME' && child.absoluteBoundingBox) {
+            const currentArea = child.absoluteBoundingBox.width * child.absoluteBoundingBox.height;
+            const bestArea = bestFrame.absoluteBoundingBox ? 
+              bestFrame.absoluteBoundingBox.width * bestFrame.absoluteBoundingBox.height : 0;
+            
+            if (currentArea > bestArea) {
+              bestFrame = child;
+            }
+          }
+        }
+        nodeId = bestFrame.id;
       } else {
         // Fallback to the canvas itself
         nodeId = firstCanvas.id;
@@ -88,8 +100,9 @@ export async function generateFigmaThumbnail(
     }
 
     // Now generate thumbnail for the specific node
+    // Use scale=0.5 for better performance and svg_include_id to ensure proper cropping
     const thumbnailResponse = await fetch(
-      `https://api.figma.com/v1/images/${fileId}?ids=${nodeId}&format=png&scale=1`,
+      `https://api.figma.com/v1/images/${fileId}?ids=${nodeId}&format=png&scale=0.5&svg_include_id=true&use_absolute_bounds=false`,
       {
         headers: {
           'X-Figma-Token': token,
