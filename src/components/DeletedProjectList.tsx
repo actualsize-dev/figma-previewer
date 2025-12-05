@@ -87,7 +87,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
               duration: 0.3,
               layout: { duration: 0.4 }
             }}
-            className="bg-card border border-border rounded-lg overflow-hidden hover:border-primary/20 transition-all hover:shadow-sm"
+            className="bg-card border border-border rounded-lg overflow-hidden project-card transition-all hover:shadow-sm"
           >
             <div className="p-6">
               <div className="flex items-start justify-between">

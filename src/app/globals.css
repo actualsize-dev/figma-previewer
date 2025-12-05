@@ -25,9 +25,9 @@
   --ds-color-3: #999999;
   
   /* Borders */
-  --ds-border-4: #f0f0f0;
-  --ds-border-5: #e5e5e5;
-  --ds-border-6: #d0d0d0;
+  --ds-border-4: #e8e8e8;
+  --ds-border-5: #d8d8d8;
+  --ds-border-6: #c0c0c0;
   
   /* High Contrast */
   --ds-color-7: #333333;
@@ -63,7 +63,8 @@
   --accent-foreground: var(--ds-text-10);
   --card: var(--ds-background-100);
   --card-foreground: var(--ds-text-10);
-  --ds-outline-hover: #ebebeb;
+  --ds-outline-hover: #e0e0e0;
+  --ds-card-hover-border: #b0b0b0;
   --radius: 6px;
 }
 
@@ -87,9 +88,9 @@
   --ds-color-2: #333333;
   --ds-color-3: #444444;
   
-  --ds-border-4: #1a1a1a;
-  --ds-border-5: #262626;
-  --ds-border-6: #404040;
+  --ds-border-4: #2a2a2a;
+  --ds-border-5: #3a3a3a;
+  --ds-border-6: #4a4a4a;
   
   --ds-color-7: #eaeaea;
   --ds-color-8: #fafafa;
@@ -97,7 +98,8 @@
   --ds-text-9: #888888;
   --ds-text-10: #ffffff;
   
-  --ds-outline-hover: #2a2a2a;
+  --ds-outline-hover: #404040;
+  --ds-card-hover-border: #606060;
   
   --background: var(--ds-background-100);
   --foreground: var(--ds-text-10);
@@ -127,10 +129,11 @@
     --ds-text-10: #ffffff;
     --ds-text-9: #888888;
     
-    --ds-border-4: #1a1a1a;
-    --ds-border-5: #262626;
-    --ds-border-6: #404040;
-    --ds-outline-hover: #2a2a2a;
+    --ds-border-4: #2a2a2a;
+    --ds-border-5: #3a3a3a;
+    --ds-border-6: #4a4a4a;
+    --ds-outline-hover: #404040;
+    --ds-card-hover-border: #606060;
     
     --background: var(--ds-background-100);
     --foreground: var(--ds-text-10);
@@ -273,4 +276,8 @@ body {
   background: var(--ds-outline-hover);
   color: var(--ds-text-10);
   border-color: transparent;
+}
+
+.project-card:hover {
+  border-color: var(--ds-card-hover-border);
 }

@@ -69,7 +69,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg overflow-hidden hover:border-primary/20 transition-all hover:shadow-sm">
+    <div className="bg-card border border-border rounded-lg overflow-hidden project-card transition-all hover:shadow-sm">
       <div className="p-6">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1 mr-4">
