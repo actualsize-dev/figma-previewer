@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { getCategoryColor } from '@/utils/categoryColors';
 
 interface EditableClientLabelProps {
   projectId: string;
@@ -71,7 +72,7 @@ export default function EditableClientLabel({
           onChange={(e) => setEditValue(e.target.value)}
           onKeyDown={handleKeyPress}
           onBlur={handleSave}
-          className="text-xs px-2 py-1 border border-blue-300 rounded bg-white text-black focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="text-xs px-2 py-1 border border-border rounded bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           placeholder="Client name..."
           disabled={isUpdating}
           autoFocus
@@ -80,10 +81,16 @@ export default function EditableClientLabel({
     );
   }
 
+  const colors = getCategoryColor(currentLabel);
+  
   return (
     <button
       onClick={() => setIsEditing(true)}
-      className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
+      className="text-xs px-2 py-1 rounded hover:opacity-80 transition-colors"
+      style={{
+        backgroundColor: colors.bg,
+        color: colors.text,
+      }}
       title="Click to edit client label"
     >
       {currentLabel}
