@@ -44,8 +44,8 @@
   --ds-blue-700: #0051cc;
   
   /* Client category colors */
-  --ds-category-blue-bg: #0070f3;
-  --ds-category-blue-text: #ffffff;
+  --ds-category-blue-bg: #10233D;
+  --ds-category-blue-text: #0070F3;
   --ds-category-orange-bg: #ff8c00;
   --ds-category-orange-text: #ffffff;
   --ds-category-green-bg: #00a86b;
@@ -116,8 +116,8 @@
   --ds-card-hover-border: #606060;
   
   /* Dark mode client category colors */
-  --ds-category-blue-bg: #0070f3;
-  --ds-category-blue-text: #ffffff;
+  --ds-category-blue-bg: #10233D;
+  --ds-category-blue-text: #0070F3;
   --ds-category-orange-bg: #ff8c00;
   --ds-category-orange-text: #ffffff;
   --ds-category-green-bg: #00a86b;
