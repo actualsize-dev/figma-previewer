@@ -143,68 +143,113 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ 
+            transition={{
               duration: 0.3,
               layout: { duration: 0.4 }
             }}
-            className="bg-card border border-border rounded-lg overflow-hidden project-card transition-all hover:shadow-sm"
           >
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1 mr-4">
-                  <h3 className="text-base font-semibold text-foreground">
-                    {project.name}
-                  </h3>
+            {viewMode === 'list' ? (
+              // Compact list view
+              <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20">
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className="text-sm font-semibold text-foreground">{project.name}</h3>
+                      <div className="text-xs px-2 py-0.5 bg-muted text-muted-foreground rounded">
+                        Deleted
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <span>Created {new Date(project.createdAt).toLocaleDateString()}</span>
+                      <span>Deleted {new Date(project.deletedAt).toLocaleDateString()}</span>
+                      <span className="font-mono">actualsize.digital/{project.slug}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => handleRestore(project.id, project.name)}
+                      className="btn btn-primary text-xs px-3 py-1"
+                    >
+                      Restore
+                    </button>
+                    <a
+                      href={project.figmaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline text-xs px-3 py-1"
+                    >
+                      Figma
+                    </a>
+                    <button
+                      onClick={() => handlePermanentDelete(project.id, project.name)}
+                      className="btn btn-destructive text-xs px-3 py-1"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                <div className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
-                  Deleted
+              </div>
+            ) : (
+              // Grid view
+              <div className="bg-card border border-border rounded-lg overflow-hidden project-card transition-all hover:shadow-sm">
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 mr-4">
+                      <h3 className="text-base font-semibold text-foreground">
+                        {project.name}
+                      </h3>
+                    </div>
+                    <div className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
+                      Deleted
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-4 mb-4">
+                    <p className="text-sm text-muted-foreground">
+                      Created {new Date(project.createdAt).toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Deleted {new Date(project.deletedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground mb-4 font-mono bg-muted px-2 py-1 rounded inline-block">
+                    actualsize.digital/{project.slug}
+                  </p>
+
+                  <div className="mb-6">
+                    <FigmaThumbnail
+                      figmaUrl={project.figmaUrl}
+                      alt={`${project.name} Figma design preview`}
+                      className="w-full h-48 border border-border"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => handleRestore(project.id, project.name)}
+                      className="btn btn-primary w-full text-sm"
+                    >
+                      Restore Project
+                    </button>
+                    <a
+                      href={project.figmaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline w-full text-sm"
+                    >
+                      View in Figma
+                    </a>
+                    <button
+                      onClick={() => handlePermanentDelete(project.id, project.name)}
+                      className="btn btn-destructive w-full text-sm"
+                    >
+                      Permanently Delete
+                    </button>
+                  </div>
                 </div>
               </div>
-              
-              <div className="flex items-center space-x-4 mb-4">
-                <p className="text-sm text-muted-foreground">
-                  Created {new Date(project.createdAt).toLocaleDateString()}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Deleted {new Date(project.deletedAt).toLocaleDateString()}
-                </p>
-              </div>
-              
-              <p className="text-xs text-muted-foreground mb-4 font-mono bg-muted px-2 py-1 rounded inline-block">
-                actualsize.digital/{project.slug}
-              </p>
-              
-              <div className="mb-6">
-                <FigmaThumbnail 
-                  figmaUrl={project.figmaUrl}
-                  alt={`${project.name} Figma design preview`}
-                  className="w-full h-48 border border-border"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <button
-                  onClick={() => handleRestore(project.id, project.name)}
-                  className="btn btn-primary w-full text-sm"
-                >
-                  Restore Project
-                </button>
-                <a
-                  href={project.figmaUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-outline w-full text-sm"
-                >
-                  View in Figma
-                </a>
-                <button
-                  onClick={() => handlePermanentDelete(project.id, project.name)}
-                  className="btn btn-destructive w-full text-sm"
-                >
-                  Permanently Delete
-                </button>
-              </div>
-            </div>
+            )}
           </motion.div>
         ))}
       </AnimatePresence>

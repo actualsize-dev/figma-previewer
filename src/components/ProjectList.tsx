@@ -59,6 +59,7 @@ export default function ProjectList({ initialProjects, viewMode = 'grid' }: Proj
               project={project}
               onProjectDeleted={handleProjectDeleted}
               onProjectUpdated={handleProjectUpdated}
+              compact={viewMode === 'list'}
             />
           </motion.div>
         ))}

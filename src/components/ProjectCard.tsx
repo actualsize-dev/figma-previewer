@@ -21,9 +21,10 @@ interface ProjectCardProps {
   project: Project;
   onProjectDeleted: (id: string) => void;
   onProjectUpdated?: (updatedProject: Project) => void;
+  compact?: boolean;
 }
 
-export default function ProjectCard({ project, onProjectDeleted, onProjectUpdated }: ProjectCardProps) {
+export default function ProjectCard({ project, onProjectDeleted, onProjectUpdated, compact = false }: ProjectCardProps) {
   const [currentProject, setCurrentProject] = useState(project);
 
   const handleLabelUpdate = (newLabel: string) => {
@@ -69,6 +70,49 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
     }
   };
 
+  if (compact) {
+    return (
+      <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20">
+        <div className="flex items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-1">
+              <InlineEdit
+                value={currentProject.name}
+                onSave={handleNameUpdate}
+                className="text-sm font-semibold text-foreground"
+                inputClassName="text-sm font-semibold"
+                placeholder="Project name..."
+              />
+              <EditableClientLabel
+                projectId={currentProject.id}
+                currentLabel={currentProject.clientLabel || 'Uncategorized'}
+                onLabelUpdate={handleLabelUpdate}
+              />
+            </div>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span>Created {new Date(currentProject.createdAt).toLocaleDateString()}</span>
+              <span className="font-mono">actualsize.digital/{currentProject.slug}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href={`/${currentProject.slug}`}
+              className="btn btn-primary text-xs px-3 py-1"
+            >
+              View
+            </Link>
+            <CopyLinkButton slug={currentProject.slug} />
+            <DeleteProjectButton
+              projectId={currentProject.id}
+              projectName={currentProject.name}
+              onDelete={onProjectDeleted}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden project-card transition-all hover:shadow-sm">
       <div className="p-6">
@@ -88,25 +132,25 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
             onLabelUpdate={handleLabelUpdate}
           />
         </div>
-        
+
         <div className="flex items-center space-x-4 mb-4">
           <p className="text-sm text-muted-foreground">
             Created {new Date(currentProject.createdAt).toLocaleDateString()}
           </p>
         </div>
-        
+
         <p className="text-xs text-muted-foreground mb-4 font-mono bg-muted px-2 py-1 rounded inline-block">
           actualsize.digital/{currentProject.slug}
         </p>
-        
+
         <div className="mb-6">
-          <FigmaThumbnail 
+          <FigmaThumbnail
             figmaUrl={currentProject.figmaUrl}
             alt={`${currentProject.name} Figma design preview`}
             className="w-full h-48 border border-border"
           />
         </div>
-        
+
         <div className="space-y-2">
           <Link
             href={`/${currentProject.slug}`}
@@ -123,7 +167,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
           >
             Open in Figma
           </a>
-          <DeleteProjectButton 
+          <DeleteProjectButton
             projectId={currentProject.id}
             projectName={currentProject.name}
             onDelete={onProjectDeleted}
