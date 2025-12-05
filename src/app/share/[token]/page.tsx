@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import BrandingFooter from '@/components/BrandingFooter';
+import ShareProjectCard from '@/components/ShareProjectCard';
 import { prisma } from '@/lib/db';
 
 type Project = {
@@ -126,28 +126,13 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project) => (
-                <Link
+                <ShareProjectCard
                   key={project.id}
-                  href={`/${project.slug}`}
-                  className="group block bg-card border border-border rounded-lg p-6 hover:border-foreground/20 transition-all hover:shadow-md"
-                >
-                  <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-foreground/80 transition-colors">
-                    {project.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(project.createdAt).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
-                  <div className="mt-4 flex items-center text-sm text-foreground/60 group-hover:text-foreground/80 transition-colors">
-                    View Project
-                    <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </Link>
+                  project={{
+                    ...project,
+                    createdAt: project.createdAt.toISOString(),
+                  }}
+                />
               ))}
             </div>
           )}
