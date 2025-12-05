@@ -90,44 +90,51 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
             className="bg-card border border-border rounded-lg overflow-hidden project-card transition-all hover:shadow-sm"
           >
             <div className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="text-base font-semibold text-foreground mb-3">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1 mr-4">
+                  <h3 className="text-base font-semibold text-foreground">
                     {project.name}
                   </h3>
-                  <div className="space-y-1 text-sm text-muted-foreground mb-4">
-                    <p>Created {new Date(project.createdAt).toLocaleDateString()}</p>
-                    <p>Deleted {new Date(project.deletedAt).toLocaleDateString()}</p>
-                    <p className="font-mono text-xs bg-muted px-2 py-1 rounded inline-block">
-                      actualsize.digital/{project.slug}
-                    </p>
-                  </div>
                 </div>
-                
-                <div className="flex flex-col space-y-2 ml-4">
-                  <div className="flex space-x-2">
-                    <a
-                      href={project.figmaUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-outline text-sm"
-                    >
-                      View in Figma
-                    </a>
-                    <button
-                      onClick={() => handleRestore(project.id, project.name)}
-                      className="btn btn-primary text-sm"
-                    >
-                      Restore Project
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => handlePermanentDelete(project.id, project.name)}
-                    className="btn btn-destructive text-sm"
-                  >
-                    Permanently Delete
-                  </button>
+                <div className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
+                  Deleted
                 </div>
+              </div>
+              
+              <div className="flex items-center space-x-4 mb-4">
+                <p className="text-sm text-muted-foreground">
+                  Created {new Date(project.createdAt).toLocaleDateString()}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Deleted {new Date(project.deletedAt).toLocaleDateString()}
+                </p>
+              </div>
+              
+              <p className="text-xs text-muted-foreground mb-6 font-mono bg-muted px-2 py-1 rounded inline-block">
+                actualsize.digital/{project.slug}
+              </p>
+              
+              <div className="space-y-2">
+                <button
+                  onClick={() => handleRestore(project.id, project.name)}
+                  className="btn btn-primary w-full text-sm"
+                >
+                  Restore Project
+                </button>
+                <a
+                  href={project.figmaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline w-full text-sm"
+                >
+                  View in Figma
+                </a>
+                <button
+                  onClick={() => handlePermanentDelete(project.id, project.name)}
+                  className="btn btn-destructive w-full text-sm"
+                >
+                  Permanently Delete
+                </button>
               </div>
             </div>
           </motion.div>

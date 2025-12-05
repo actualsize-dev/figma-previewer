@@ -48,7 +48,7 @@ export default async function ProjectsPage() {
               <nav className="flex items-center space-x-6">
                 <span className="text-sm font-medium text-foreground relative">
                   Projects
-                  <div className="absolute bottom-[-17px] left-0 right-0 h-0.5 bg-foreground"></div>
+                  <div className="absolute bottom-[-16px] left-0 right-0 h-0.5 bg-foreground"></div>
                 </span>
                 <Link
                   href="/projects/deleted"
@@ -87,7 +87,7 @@ export default async function ProjectsPage() {
               <nav className="flex items-center space-x-6">
                 <span className="text-sm font-medium text-foreground relative">
                   Projects
-                  <div className="absolute bottom-[-8px] left-0 right-0 h-0.5 bg-foreground"></div>
+                  <div className="absolute bottom-[-20px] left-0 right-0 h-0.5 bg-foreground"></div>
                 </span>
                 <Link
                   href="/projects/deleted"
