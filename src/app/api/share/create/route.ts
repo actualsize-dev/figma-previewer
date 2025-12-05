@@ -33,8 +33,10 @@ export async function POST(request: Request) {
       },
     });
 
-    // Generate the full share URL
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    // Generate the full share URL from request headers
+    const host = request.headers.get('host') || 'localhost:3000';
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const baseUrl = `${protocol}://${host}`;
     const shareUrl = `${baseUrl}/share/${token}`;
 
     return NextResponse.json({
