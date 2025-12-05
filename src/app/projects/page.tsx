@@ -39,21 +39,41 @@ export default async function ProjectsPage() {
       {/* Vercel-style header */}
       <header className="border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          {/* Desktop layout */}
+          <div className="hidden sm:flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
               <Link href="/" className="text-xl font-semibold text-foreground hover:text-muted-foreground transition-colors">
                 Figma Concierge
               </Link>
               <nav className="flex items-center space-x-6">
-                <span className="text-sm font-medium text-foreground">Projects</span>
+                <span className="text-sm font-medium text-foreground relative">
+                  Projects
+                  <div className="absolute bottom-[-17px] left-0 right-0 h-0.5 bg-foreground"></div>
+                </span>
+                <Link
+                  href="/projects/deleted"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Deleted
+                </Link>
               </nav>
             </div>
             <div className="flex items-center space-x-4">
               <Link
-                href="/projects/deleted"
-                className="btn btn-subtle text-sm"
+                href="/"
+                className="btn btn-primary text-sm"
               >
-                Deleted
+                New Project
+              </Link>
+            </div>
+          </div>
+
+          {/* Mobile layout */}
+          <div className="sm:hidden">
+            {/* Top line: Figma Concierge + New Project button */}
+            <div className="flex justify-between items-center h-16">
+              <Link href="/" className="text-xl font-semibold text-foreground hover:text-muted-foreground transition-colors">
+                Figma Concierge
               </Link>
               <Link
                 href="/"
@@ -61,6 +81,21 @@ export default async function ProjectsPage() {
               >
                 New Project
               </Link>
+            </div>
+            {/* Bottom line: Navigation */}
+            <div className="pb-4">
+              <nav className="flex items-center space-x-6">
+                <span className="text-sm font-medium text-foreground relative">
+                  Projects
+                  <div className="absolute bottom-[-8px] left-0 right-0 h-0.5 bg-foreground"></div>
+                </span>
+                <Link
+                  href="/projects/deleted"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Deleted
+                </Link>
+              </nav>
             </div>
           </div>
         </div>
