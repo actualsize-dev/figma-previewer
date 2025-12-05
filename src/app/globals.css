@@ -242,7 +242,7 @@ body {
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: var(--ds-color-1);
+  background: var(--ds-color-2);
   color: var(--ds-text-10);
   border-color: var(--ds-border-6);
 }
