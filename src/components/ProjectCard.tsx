@@ -69,15 +69,15 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+    <div className="bg-card border border-border rounded-lg overflow-hidden hover:border-primary/20 transition-all hover:shadow-sm">
       <div className="p-6">
-        <div className="flex items-start justify-between mb-2">
+        <div className="flex items-start justify-between mb-3">
           <div className="flex-1 mr-4">
             <InlineEdit
               value={currentProject.name}
               onSave={handleNameUpdate}
-              className="text-lg font-semibold text-gray-900 block w-full"
-              inputClassName="text-lg font-semibold w-full"
+              className="text-base font-semibold text-foreground block w-full"
+              inputClassName="text-base font-semibold w-full"
               placeholder="Project name..."
             />
           </div>
@@ -87,17 +87,21 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
             onLabelUpdate={handleLabelUpdate}
           />
         </div>
-        <p className="text-sm text-gray-500 mb-2">
-          Created {new Date(currentProject.createdAt).toLocaleDateString()}
-        </p>
-        <p className="text-xs text-gray-400 mb-4 font-mono">
+        
+        <div className="flex items-center space-x-4 mb-4">
+          <p className="text-sm text-muted-foreground">
+            Created {new Date(currentProject.createdAt).toLocaleDateString()}
+          </p>
+        </div>
+        
+        <p className="text-xs text-muted-foreground mb-6 font-mono bg-muted px-2 py-1 rounded inline-block">
           actualsize.digital/{currentProject.slug}
         </p>
         
         <div className="space-y-2">
           <Link
             href={`/${currentProject.slug}`}
-            className="block w-full text-center py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+            className="btn btn-primary w-full text-sm"
           >
             View Prototype
           </Link>
@@ -106,7 +110,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
             href={currentProject.figmaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full text-center py-2 px-4 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm"
+            className="btn btn-secondary w-full text-sm"
           >
             Open in Figma
           </a>

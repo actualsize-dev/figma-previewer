@@ -129,14 +129,14 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
   if (groupedView) {
     return (
       <div className="space-y-8">
-        <div className="flex flex-wrap gap-4 items-center justify-between">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700">Filter:</label>
+              <label className="text-sm font-medium text-foreground">Filter:</label>
               <select
                 value={selectedClient}
                 onChange={(e) => setSelectedClient(e.target.value)}
-                className="text-sm border border-gray-300 rounded px-3 py-1 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-sm bg-background border border-border rounded px-3 py-1 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               >
                 <option value="all">All Clients</option>
                 {clientLabels.map(client => (
@@ -146,11 +146,11 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
             </div>
             
             <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700">Group by:</label>
+              <label className="text-sm font-medium text-foreground">Group by:</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'date' | 'client')}
-                className="text-sm border border-gray-300 rounded px-3 py-1 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-sm bg-background border border-border rounded px-3 py-1 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               >
                 <option value="date">Date</option>
                 <option value="client">Client</option>
@@ -158,43 +158,45 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <input
-              type="text"
-              placeholder="Search projects..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="text-sm border border-gray-300 rounded px-3 py-2 w-64 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm('')}
-                className="text-gray-400 hover:text-gray-600 focus:outline-none"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:flex-none">
+              <input
+                type="text"
+                placeholder="Search projects..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="text-sm bg-background border border-border rounded px-3 py-2 pr-8 w-full sm:w-64 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
         {clientLabels.length > 0 ? (
           clientLabels.map(client => (
-            <div key={client} className="space-y-4">
+            <div key={client} className="space-y-6">
               <div className="flex items-center space-x-3">
                 {client === 'Uncategorized' ? (
-                  <h2 className="text-xl font-semibold text-gray-900">{client}</h2>
+                  <h2 className="text-lg font-semibold text-foreground">{client}</h2>
                 ) : (
                   <InlineEdit
                     value={client}
                     onSave={(newName) => handleClientRename(client, newName)}
-                    className="text-xl font-semibold text-gray-900"
-                    inputClassName="text-xl font-semibold"
+                    className="text-lg font-semibold text-foreground"
+                    inputClassName="text-lg font-semibold"
                     placeholder="Client category name..."
                   />
                 )}
-                <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md">
                   {projectsByClient[client].length} project{projectsByClient[client].length !== 1 ? 's' : ''}
                 </span>
               </div>
@@ -202,17 +204,21 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
             </div>
           ))
         ) : (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-medium text-gray-900 mb-2">
+          <div className="text-center py-16">
+            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
               No projects found
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-6">
               No projects match your search "{searchTerm}"
             </p>
             <button
               onClick={() => setSearchTerm('')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="btn btn-primary"
             >
               Clear Search
             </button>
@@ -224,14 +230,14 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap gap-4 items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center space-x-2">
-            <label className="text-sm font-medium text-gray-700">Filter:</label>
+            <label className="text-sm font-medium text-foreground">Filter:</label>
             <select
               value={selectedClient}
               onChange={(e) => setSelectedClient(e.target.value)}
-              className="text-sm border border-gray-300 rounded px-3 py-1 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-sm bg-background border border-border rounded px-3 py-1 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
             >
               <option value="all">All Clients</option>
               {clientLabels.map(client => (
@@ -241,11 +247,11 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
           </div>
           
           <div className="flex items-center space-x-2">
-            <label className="text-sm font-medium text-gray-700">Sort by:</label>
+            <label className="text-sm font-medium text-foreground">Sort by:</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'date' | 'client')}
-              className="text-sm border border-gray-300 rounded px-3 py-1 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-sm bg-background border border-border rounded px-3 py-1 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
             >
               <option value="date">Date</option>
               <option value="client">Client</option>
@@ -253,42 +259,48 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <input
-            type="text"
-            placeholder="Search projects..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-sm border border-gray-300 rounded px-3 py-2 w-64 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm('')}
-              className="text-gray-400 hover:text-gray-600 focus:outline-none"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
+        <div className="flex items-center space-x-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:flex-none">
+            <input
+              type="text"
+              placeholder="Search projects..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="text-sm bg-background border border-border rounded px-3 py-2 pr-8 w-full sm:w-64 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       {displayedProjects.length > 0 ? (
         <ProjectList initialProjects={displayedProjects} />
       ) : (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-xl font-medium text-gray-900 mb-2">
+        <div className="text-center py-16">
+          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-foreground mb-2">
             No projects found
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-muted-foreground mb-6">
             {searchTerm ? `No projects match your search "${searchTerm}"` : 'No projects available'}
           </p>
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="btn btn-primary"
             >
               Clear Search
             </button>

@@ -1,8 +1,135 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Vercel Geist Design System Color Variables */
+  
+  /* Backgrounds */
+  --ds-background-100: #ffffff;
+  --ds-background-200: #fafafa;
+  
+  /* Gray Scale (Vercel's primary neutral colors) */
+  --ds-gray-100: #fafafa;
+  --ds-gray-200: #eaeaea;
+  --ds-gray-300: #999999;
+  --ds-gray-400: #888888;
+  --ds-gray-500: #666666;
+  --ds-gray-600: #444444;
+  --ds-gray-700: #333333;
+  --ds-gray-800: #111111;
+  --ds-gray-900: #000000;
+  --ds-gray-1000: #000000;
+  
+  /* Component Colors */
+  --ds-color-1: #fafafa;
+  --ds-color-2: #eaeaea;
+  --ds-color-3: #999999;
+  
+  /* Borders */
+  --ds-border-4: #eaeaea;
+  --ds-border-5: #999999;
+  --ds-border-6: #888888;
+  
+  /* High Contrast */
+  --ds-color-7: #333333;
+  --ds-color-8: #111111;
+  
+  /* Text */
+  --ds-text-9: #666666;
+  --ds-text-10: #000000;
+  
+  /* Blue (Vercel brand color) */
+  --ds-blue-100: #e6f7ff;
+  --ds-blue-500: #0070f3;
+  --ds-blue-600: #0060df;
+  --ds-blue-700: #0051cc;
+  
+  /* Semantic Colors */
+  --ds-success: #00a86b;
+  --ds-error: #e00;
+  --ds-warning: #f5a623;
+  
+  /* Component Specific */
+  --background: var(--ds-background-100);
+  --foreground: var(--ds-text-10);
+  --muted: var(--ds-background-200);
+  --muted-foreground: var(--ds-text-9);
+  --border: var(--ds-border-4);
+  --input: var(--ds-background-100);
+  --primary: var(--ds-blue-500);
+  --primary-foreground: #ffffff;
+  --secondary: var(--ds-color-1);
+  --secondary-foreground: var(--ds-text-10);
+  --accent: var(--ds-color-2);
+  --accent-foreground: var(--ds-text-10);
+  --card: var(--ds-background-100);
+  --card-foreground: var(--ds-text-10);
+  --radius: 6px;
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --ds-background-100: #000000;
+  --ds-background-200: #111111;
+  
+  --ds-gray-100: #111111;
+  --ds-gray-200: #333333;
+  --ds-gray-300: #444444;
+  --ds-gray-400: #666666;
+  --ds-gray-500: #888888;
+  --ds-gray-600: #999999;
+  --ds-gray-700: #eaeaea;
+  --ds-gray-800: #fafafa;
+  --ds-gray-900: #ffffff;
+  --ds-gray-1000: #ffffff;
+  
+  --ds-color-1: #111111;
+  --ds-color-2: #333333;
+  --ds-color-3: #444444;
+  
+  --ds-border-4: #333333;
+  --ds-border-5: #444444;
+  --ds-border-6: #666666;
+  
+  --ds-color-7: #eaeaea;
+  --ds-color-8: #fafafa;
+  
+  --ds-text-9: #888888;
+  --ds-text-10: #ffffff;
+  
+  --background: var(--ds-background-100);
+  --foreground: var(--ds-text-10);
+  --muted: var(--ds-background-200);
+  --muted-foreground: var(--ds-text-9);
+  --border: var(--ds-border-4);
+  --card: var(--ds-background-100);
+  --card-foreground: var(--ds-text-10);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ds-background-100: #000000;
+    --ds-background-200: #111111;
+    
+    --ds-gray-100: #111111;
+    --ds-gray-200: #333333;
+    --ds-gray-300: #444444;
+    --ds-gray-400: #666666;
+    --ds-gray-500: #888888;
+    --ds-gray-600: #999999;
+    --ds-gray-700: #eaeaea;
+    --ds-gray-800: #fafafa;
+    --ds-gray-900: #ffffff;
+    --ds-gray-1000: #ffffff;
+    
+    --ds-text-10: #ffffff;
+    --ds-text-9: #888888;
+    
+    --background: var(--ds-background-100);
+    --foreground: var(--ds-text-10);
+    --muted: var(--ds-background-200);
+    --muted-foreground: var(--ds-text-9);
+    --border: var(--ds-border-4);
+  }
 }
 
 @theme inline {
@@ -10,17 +137,96 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  
+  /* Vercel-inspired Tailwind extensions */
+  --color-ds-bg-100: var(--ds-background-100);
+  --color-ds-bg-200: var(--ds-background-200);
+  --color-ds-gray-100: var(--ds-gray-100);
+  --color-ds-gray-200: var(--ds-gray-200);
+  --color-ds-gray-300: var(--ds-gray-300);
+  --color-ds-gray-400: var(--ds-gray-400);
+  --color-ds-gray-500: var(--ds-gray-500);
+  --color-ds-gray-600: var(--ds-gray-600);
+  --color-ds-gray-700: var(--ds-gray-700);
+  --color-ds-gray-800: var(--ds-gray-800);
+  --color-ds-gray-900: var(--ds-gray-900);
+  --color-ds-blue-500: var(--ds-blue-500);
+  --color-ds-blue-600: var(--ds-blue-600);
+  --color-ds-blue-700: var(--ds-blue-700);
+  --color-primary: var(--primary);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-card: var(--card);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Vercel-style smooth transitions */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Vercel-style focus states */
+*:focus-visible {
+  outline: 2px solid var(--ds-blue-500);
+  outline-offset: 2px;
+}
+
+/* Vercel-style button base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--ds-blue-500);
+  color: white;
+  border-color: var(--ds-blue-500);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--ds-blue-600);
+  border-color: var(--ds-blue-600);
+}
+
+.btn-secondary {
+  background: var(--ds-color-1);
+  color: var(--ds-text-10);
+  border-color: var(--ds-border-4);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--ds-color-2);
+  border-color: var(--ds-border-5);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ds-text-9);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--ds-color-1);
+  color: var(--ds-text-10);
 }

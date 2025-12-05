@@ -55,7 +55,7 @@ export default function ClientCategoryInput({ value, onChange }: ClientCategoryI
           value={isCreatingNew ? customValue : value}
           onChange={(e) => isCreatingNew ? handleCustomInputChange(e.target.value) : onChange(e.target.value)}
           placeholder="e.g., Auto Innovators, Personal Project"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
         />
         {existingClients.length > 0 && (
           <button
@@ -65,7 +65,7 @@ export default function ClientCategoryInput({ value, onChange }: ClientCategoryI
               setCustomValue('');
               onChange('');
             }}
-            className="text-sm text-blue-600 hover:text-blue-800"
+            className="text-sm text-primary hover:underline"
           >
             ← Use existing client
           </button>
@@ -79,7 +79,7 @@ export default function ClientCategoryInput({ value, onChange }: ClientCategoryI
       <select
         value={value || ''}
         onChange={(e) => handleSelectChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="w-full px-3 py-2 bg-background border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
       >
         <option value="">Select existing client...</option>
         {existingClients.map(client => (

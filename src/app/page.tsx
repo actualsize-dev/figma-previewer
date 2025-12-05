@@ -69,86 +69,111 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="flex-1 flex items-center justify-center px-4">
-        <div className="max-w-md w-full space-y-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Figma Concierge
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Vercel-style header with navigation */}
+      <header className="border-b border-border bg-card">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-8">
+              <h1 className="text-xl font-semibold text-foreground">
+                Figma Concierge
+              </h1>
+            </div>
+            <nav className="flex items-center space-x-6">
+              <a 
+                href="/projects" 
+                className="btn btn-ghost text-sm"
+              >
+                Projects
+              </a>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Main content area */}
+      <main className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-lg">
+          {/* Hero section */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-foreground mb-4 tracking-tight">
+              Create Figma Prototype Pages
             </h1>
-            <p className="text-gray-600">
-              Create a custom page for your Figma prototype
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Transform your Figma prototypes into standalone, shareable pages with custom URLs and professional presentation.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-            <div>
-              <label htmlFor="projectName" className="block text-sm font-medium text-gray-700 mb-2">
-                Project Name
-              </label>
-              <input
-                id="projectName"
-                type="text"
-                required
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                placeholder="e.g., Autos Creative Direction"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              {projectName && (
-                <p className="mt-2 text-sm text-gray-500">
-                  URL: actualsize.digital/<span className="font-mono">{createSlug(projectName)}</span>
+          {/* Form card */}
+          <div className="bg-card border border-border rounded-lg p-8 shadow-sm">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label htmlFor="projectName" className="block text-sm font-medium text-foreground">
+                  Project Name
+                </label>
+                <input
+                  id="projectName"
+                  type="text"
+                  required
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  placeholder="e.g., Autos Creative Direction"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                />
+                {projectName && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    URL: <span className="font-mono text-foreground">actualsize.digital/{createSlug(projectName)}</span>
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="clientLabel" className="block text-sm font-medium text-foreground">
+                  Client/Category <span className="text-muted-foreground">(optional)</span>
+                </label>
+                <ClientCategoryInput
+                  value={clientLabel}
+                  onChange={setClientLabel}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="figmaUrl" className="block text-sm font-medium text-foreground">
+                  Figma Prototype URL
+                </label>
+                <input
+                  id="figmaUrl"
+                  type="url"
+                  required
+                  value={figmaUrl}
+                  onChange={(e) => setFigmaUrl(e.target.value)}
+                  placeholder="https://www.figma.com/proto/..."
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Ensure your Figma prototype has public viewing permissions
                 </p>
-              )}
-            </div>
+              </div>
 
-            <div>
-              <label htmlFor="clientLabel" className="block text-sm font-medium text-gray-700 mb-2">
-                Client/Category (optional)
-              </label>
-              <ClientCategoryInput
-                value={clientLabel}
-                onChange={setClientLabel}
-              />
-            </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn btn-primary w-full h-10"
+              >
+                {isLoading ? 'Creating...' : 'Create Project Page'}
+              </button>
+            </form>
+          </div>
 
-            <div>
-              <label htmlFor="figmaUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                Figma Prototype URL
-              </label>
-              <input
-                id="figmaUrl"
-                type="url"
-                required
-                value={figmaUrl}
-                onChange={(e) => setFigmaUrl(e.target.value)}
-                placeholder="https://www.figma.com/proto/..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              <p className="mt-2 text-xs text-gray-500">
-                Make sure your Figma prototype has public viewing permissions
-              </p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? 'Creating...' : 'Create Project Page'}
-            </button>
-          </form>
-
-          <div className="text-center">
-            <a 
-              href="/projects" 
-              className="text-blue-600 hover:text-blue-800 text-sm"
-            >
-              View all projects
-            </a>
+          {/* Additional info */}
+          <div className="mt-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              Already have projects? <a href="/projects" className="text-primary hover:underline font-medium">View all projects →</a>
+            </p>
           </div>
         </div>
-      </div>
+      </main>
+
       <BrandingFooter />
     </div>
   );

@@ -35,58 +35,83 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="flex-1 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              All Projects
-            </h1>
-            <p className="text-gray-600">
-              Browse all created prototype pages
-            </p>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Vercel-style header */}
+      <header className="border-b border-border bg-card">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-8">
+              <Link href="/" className="text-xl font-semibold text-foreground hover:text-muted-foreground transition-colors">
+                Figma Concierge
+              </Link>
+              <nav className="flex items-center space-x-6">
+                <span className="text-sm font-medium text-foreground">Projects</span>
+              </nav>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/projects/deleted"
+                className="btn btn-ghost text-sm"
+              >
+                Deleted
+              </Link>
+              <Link
+                href="/"
+                className="btn btn-primary text-sm"
+              >
+                New Project
+              </Link>
+            </div>
           </div>
+        </div>
+      </header>
 
-          <div className="mb-6 flex justify-between items-center">
-            <Link
-              href="/"
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            >
-              + Create New Project
-            </Link>
-            
-            <Link
-              href="/projects/deleted"
-              className="text-gray-600 hover:text-gray-800 transition-colors text-sm"
-            >
-              View Deleted Projects →
-            </Link>
-          </div>
-
+      {/* Main content */}
+      <main className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {projects.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">📱</div>
-              <h3 className="text-xl font-medium text-gray-900 mb-2">
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 No projects yet
               </h3>
-              <p className="text-gray-600 mb-6">
-                Create your first prototype page to get started
+              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                Create your first Figma prototype page to get started. Transform your designs into shareable, professional presentations.
               </p>
               <Link
                 href="/"
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="btn btn-primary"
               >
-                Create First Project
+                Create Your First Project
               </Link>
             </div>
           ) : (
-            <ProjectsWithGrouping projects={projects.map(project => ({
-              ...project,
-              createdAt: project.createdAt.toISOString()
-            }))} />
+            <div className="space-y-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-2xl font-semibold text-foreground">Projects</h1>
+                  <p className="text-muted-foreground mt-1">
+                    Manage your Figma prototype pages
+                  </p>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {projects.length} project{projects.length !== 1 ? 's' : ''}
+                </div>
+              </div>
+              
+              <ProjectsWithGrouping projects={projects.map(project => ({
+                ...project,
+                createdAt: project.createdAt.toISOString()
+              }))} />
+            </div>
           )}
         </div>
-      </div>
+      </main>
+
       <BrandingFooter />
     </div>
   );
