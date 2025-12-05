@@ -20,3 +20,14 @@ model Project {
 
   @@map("projects")
 }
+
+model ShareLink {
+  id          String    @id @default(cuid())
+  token       String    @unique
+  clientLabel String    @map("client_label")
+  expiresAt   DateTime? @map("expires_at")
+  createdBy   String?   @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("share_links")
+}

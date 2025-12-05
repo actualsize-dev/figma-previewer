@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import ProjectList from './ProjectList';
 import InlineEdit from './InlineEdit';
+import ShareLinksManager from './ShareLinksManager';
 
 type Project = {
   id: string;
@@ -184,21 +185,26 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
         {clientLabels.length > 0 ? (
           clientLabels.map(client => (
             <div key={client} className="space-y-6">
-              <div className="flex items-center space-x-3">
-                {client === 'Uncategorized' ? (
-                  <h2 className="text-lg font-semibold text-foreground">{client}</h2>
-                ) : (
-                  <InlineEdit
-                    value={client}
-                    onSave={(newName) => handleClientRename(client, newName)}
-                    className="text-lg font-semibold text-foreground"
-                    inputClassName="text-lg font-semibold"
-                    placeholder="Client category name..."
-                  />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  {client === 'Uncategorized' ? (
+                    <h2 className="text-lg font-semibold text-foreground">{client}</h2>
+                  ) : (
+                    <InlineEdit
+                      value={client}
+                      onSave={(newName) => handleClientRename(client, newName)}
+                      className="text-lg font-semibold text-foreground"
+                      inputClassName="text-lg font-semibold"
+                      placeholder="Client category name..."
+                    />
+                  )}
+                  <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md">
+                    {projectsByClient[client].length} project{projectsByClient[client].length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                {client !== 'Uncategorized' && (
+                  <ShareLinksManager clientLabel={client} />
                 )}
-                <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md">
-                  {projectsByClient[client].length} project{projectsByClient[client].length !== 1 ? 's' : ''}
-                </span>
               </div>
               <ProjectList initialProjects={projectsByClient[client]} />
             </div>
