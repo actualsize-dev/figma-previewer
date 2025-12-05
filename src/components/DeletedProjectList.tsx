@@ -75,15 +75,15 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
   };
 
   return (
-    <div className="space-y-4">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       <AnimatePresence mode="popLayout">
         {deletedProjects.map((project) => (
           <motion.div
             key={project.id}
             layout
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
             transition={{ 
               duration: 0.3,
               layout: { duration: 0.4 }

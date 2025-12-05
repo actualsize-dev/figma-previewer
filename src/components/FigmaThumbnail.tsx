@@ -48,7 +48,8 @@ export default function FigmaThumbnail({
             setError(true);
           }
         } else {
-          console.warn('Thumbnail generation failed:', await response.text());
+          const errorData = await response.text();
+          console.warn('Thumbnail generation failed:', response.status, errorData);
           setError(true);
         }
       } catch (err) {

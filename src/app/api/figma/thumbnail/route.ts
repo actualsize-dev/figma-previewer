@@ -6,9 +6,25 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { figmaUrl } = body;
 
+    console.log('Thumbnail request for URL:', figmaUrl);
+
     if (!figmaUrl) {
       return NextResponse.json(
         { error: 'Figma URL is required' },
+        { status: 400 }
+      );
+    }
+
+    // Check if API token is available
+    const hasToken = !!process.env.FIGMA_ACCESS_TOKEN;
+    console.log('Figma API token available:', hasToken);
+
+    if (!hasToken) {
+      return NextResponse.json(
+        { 
+          error: 'Figma API token not configured',
+          message: 'FIGMA_ACCESS_TOKEN environment variable is required for thumbnail generation'
+        },
         { status: 400 }
       );
     }
@@ -17,21 +33,23 @@ export async function POST(request: NextRequest) {
     const thumbnail = await generateFigmaThumbnail(figmaUrl);
     
     if (!thumbnail) {
+      console.log('Thumbnail generation failed for:', figmaUrl);
       return NextResponse.json(
         { 
           error: 'Unable to generate thumbnail',
-          message: 'This could be due to missing Figma API token, invalid URL, or file permissions'
+          message: 'This could be due to invalid URL, file permissions, or API issues'
         },
         { status: 400 }
       );
     }
 
+    console.log('Thumbnail generated successfully:', thumbnail.url);
     return NextResponse.json({ thumbnail });
     
   } catch (error) {
     console.error('Thumbnail generation error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate thumbnail' },
+      { error: 'Failed to generate thumbnail', details: error.message },
       { status: 500 }
     );
   }
