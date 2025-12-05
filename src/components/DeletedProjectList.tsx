@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import FigmaThumbnail from './FigmaThumbnail';
+import { Grid3x3, List } from 'lucide-react';
 
 type DeletedProject = {
   id: string;
@@ -20,6 +21,14 @@ interface DeletedProjectListProps {
 
 export default function DeletedProjectList({ initialDeletedProjects }: DeletedProjectListProps) {
   const [deletedProjects, setDeletedProjects] = useState(initialDeletedProjects);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredProjects = deletedProjects.filter(project =>
+    !searchTerm.trim() ||
+    project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleProjectRemoved = (removedId: string) => {
     setDeletedProjects(prevProjects => 
@@ -75,9 +84,59 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
   };
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <AnimatePresence mode="popLayout">
-        {deletedProjects.map((project) => (
+    <div className="space-y-6">
+      {/* Controls */}
+      <div className="flex items-center gap-2 justify-between">
+        <div className="relative flex-1 max-w-md">
+          <input
+            type="text"
+            placeholder="Search deleted projects..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="text-sm bg-background border border-border rounded px-3 py-2 pr-8 w-full text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm('')}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`p-2 rounded transition-colors ${
+              viewMode === 'grid'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground hover:text-foreground'
+            }`}
+            title="Grid view"
+          >
+            <Grid3x3 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={`p-2 rounded transition-colors ${
+              viewMode === 'list'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground hover:text-foreground'
+            }`}
+            title="List view"
+          >
+            <List className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Project Grid/List */}
+      <div className={viewMode === 'grid' ? 'grid gap-6 md:grid-cols-2 lg:grid-cols-3' : 'space-y-4'}>
+        <AnimatePresence mode="popLayout">
+          {filteredProjects.map((project) => (
           <motion.div
             key={project.id}
             layout
@@ -149,13 +208,22 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
           </motion.div>
         ))}
       </AnimatePresence>
-      
+    </div>
+
+      {filteredProjects.length === 0 && deletedProjects.length > 0 && (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">No deleted projects match your search.</p>
+          <button
+            onClick={() => setSearchTerm('')}
+            className="btn btn-primary"
+          >
+            Clear Search
+          </button>
+        </div>
+      )}
+
       {deletedProjects.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-8"
-        >
+        <div className="text-center py-8">
           <p className="text-muted-foreground mb-4">All deleted projects have been restored!</p>
           <Link
             href="/projects"
@@ -163,7 +231,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
           >
             Back to Projects
           </Link>
-        </motion.div>
+        </div>
       )}
     </div>
   );

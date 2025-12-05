@@ -51,6 +51,12 @@ export default async function ProjectsPage() {
                   <div className="absolute bottom-[-16px] left-0 right-0 h-0.5 bg-foreground"></div>
                 </span>
                 <Link
+                  href="/clients"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Clients
+                </Link>
+                <Link
                   href="/projects/deleted"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -89,6 +95,12 @@ export default async function ProjectsPage() {
                   Projects
                   <div className="absolute bottom-[-20px] left-0 right-0 h-0.5 bg-foreground"></div>
                 </span>
+                <Link
+                  href="/clients"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Clients
+                </Link>
                 <Link
                   href="/projects/deleted"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"

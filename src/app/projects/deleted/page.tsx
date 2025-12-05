@@ -52,6 +52,12 @@ export default async function DeletedProjectsPage() {
                 >
                   Projects
                 </Link>
+                <Link
+                  href="/clients"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Clients
+                </Link>
                 <span className="text-sm font-medium text-foreground relative">
                   Deleted
                   <div className="absolute bottom-[-16px] left-0 right-0 h-0.5 bg-foreground"></div>
@@ -90,6 +96,12 @@ export default async function DeletedProjectsPage() {
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Projects
+                </Link>
+                <Link
+                  href="/clients"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Clients
                 </Link>
                 <span className="text-sm font-medium text-foreground relative">
                   Deleted

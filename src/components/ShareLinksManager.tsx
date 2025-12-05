@@ -20,8 +20,36 @@ export default function ShareLinksManager({ clientLabel }: ShareLinksManagerProp
   const [isOpen, setIsOpen] = useState(false);
   const [shareLink, setShareLink] = useState<ShareLink | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Fetch existing share link when modal opens
+  useEffect(() => {
+    const fetchExistingLink = async () => {
+      if (!isOpen) return;
+
+      setIsFetching(true);
+      setError(null);
+
+      try {
+        const response = await fetch(`/api/share/by-client?clientLabel=${encodeURIComponent(clientLabel)}`);
+        const data = await response.json();
+
+        if (response.ok && data.shareLinks && data.shareLinks.length > 0) {
+          // Use the most recent share link
+          setShareLink(data.shareLinks[0]);
+        }
+      } catch (err) {
+        console.error('Error fetching existing share link:', err);
+        // Don't show error to user, just start with no link
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchExistingLink();
+  }, [isOpen, clientLabel]);
 
   const generateShareLink = async () => {
     setIsLoading(true);
@@ -125,7 +153,18 @@ export default function ShareLinksManager({ clientLabel }: ShareLinksManagerProp
             </div>
           )}
 
-          {!shareLink ? (
+          {isFetching ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 animate-spin text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Loading share link...
+              </p>
+            </div>
+          ) : !shareLink ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                 <Share2 className="w-8 h-8 text-muted-foreground" />

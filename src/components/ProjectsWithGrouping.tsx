@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import ProjectList from './ProjectList';
 import InlineEdit from './InlineEdit';
 import ShareLinksManager from './ShareLinksManager';
+import { Grid3x3, List } from 'lucide-react';
 
 type Project = {
   id: string;
@@ -22,6 +23,7 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
   const [selectedClient, setSelectedClient] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date' | 'client'>('date');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [projectsList, setProjectsList] = useState<Project[]>(projects);
 
   // Group projects by client (with search filter applied)
@@ -159,7 +161,7 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <div className="relative flex-1 sm:flex-none">
               <input
                 type="text"
@@ -178,6 +180,31 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
                   </svg>
                 </button>
               )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded transition-colors ${
+                  viewMode === 'grid'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:text-foreground'
+                }`}
+                title="Grid view"
+              >
+                <Grid3x3 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded transition-colors ${
+                  viewMode === 'list'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:text-foreground'
+                }`}
+                title="List view"
+              >
+                <List className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
@@ -206,7 +233,7 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
                   <ShareLinksManager clientLabel={client} />
                 )}
               </div>
-              <ProjectList initialProjects={projectsByClient[client]} />
+              <ProjectList initialProjects={projectsByClient[client]} viewMode={viewMode} />
             </div>
           ))
         ) : (
@@ -265,7 +292,7 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <div className="relative flex-1 sm:flex-none">
             <input
               type="text"
@@ -285,11 +312,36 @@ export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingP
               </button>
             )}
           </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded transition-colors ${
+                viewMode === 'grid'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground hover:text-foreground'
+              }`}
+              title="Grid view"
+            >
+              <Grid3x3 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded transition-colors ${
+                viewMode === 'list'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground hover:text-foreground'
+              }`}
+              title="List view"
+            >
+              <List className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
       {displayedProjects.length > 0 ? (
-        <ProjectList initialProjects={displayedProjects} />
+        <ProjectList initialProjects={displayedProjects} viewMode={viewMode} />
       ) : (
         <div className="text-center py-16">
           <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">

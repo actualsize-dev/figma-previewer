@@ -15,9 +15,10 @@ type Project = {
 
 interface ProjectListProps {
   initialProjects: Project[];
+  viewMode?: 'grid' | 'list';
 }
 
-export default function ProjectList({ initialProjects }: ProjectListProps) {
+export default function ProjectList({ initialProjects, viewMode = 'grid' }: ProjectListProps) {
   const [projects, setProjects] = useState(initialProjects);
 
   // Update projects when initialProjects changes
@@ -40,7 +41,7 @@ export default function ProjectList({ initialProjects }: ProjectListProps) {
   };
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className={viewMode === 'grid' ? 'grid gap-6 md:grid-cols-2 lg:grid-cols-3' : 'space-y-4'}>
       <AnimatePresence mode="popLayout">
         {projects.map((project) => (
           <motion.div
