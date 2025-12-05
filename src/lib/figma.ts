@@ -52,9 +52,9 @@ export async function generateFigmaThumbnail(
       return null;
     }
 
-    // Call Figma REST API to get file thumbnails
-    const response = await fetch(
-      `https://api.figma.com/v1/images/${fileId}?format=png&scale=2`,
+    // First, get file info to find the first canvas/frame
+    const fileInfoResponse = await fetch(
+      `https://api.figma.com/v1/files/${fileId}`,
       {
         headers: {
           'X-Figma-Token': token,
@@ -62,29 +62,59 @@ export async function generateFigmaThumbnail(
       }
     );
 
-    if (!response.ok) {
-      console.error('Figma API error:', response.status, response.statusText);
+    if (!fileInfoResponse.ok) {
+      console.error('Figma file info API error:', fileInfoResponse.status, fileInfoResponse.statusText);
       return null;
     }
 
-    const data = await response.json();
+    const fileInfo = await fileInfoResponse.json();
     
-    // Get the first available image URL
-    const imageUrls = data.images;
-    if (imageUrls && Object.keys(imageUrls).length > 0) {
-      const firstNodeId = Object.keys(imageUrls)[0];
-      const imageUrl = imageUrls[firstNodeId];
-      
-      if (imageUrl) {
-        return {
-          url: imageUrl,
-          fileId,
-          nodeId: firstNodeId,
-        };
+    // Find the first canvas (page) and its first frame
+    let nodeId = null;
+    if (fileInfo.document?.children) {
+      const firstCanvas = fileInfo.document.children[0];
+      if (firstCanvas && firstCanvas.children && firstCanvas.children.length > 0) {
+        // Use the first frame/artboard as the thumbnail
+        nodeId = firstCanvas.children[0].id;
+      } else {
+        // Fallback to the canvas itself
+        nodeId = firstCanvas.id;
       }
     }
 
-    console.warn('No thumbnail images available for Figma file:', fileId);
+    if (!nodeId) {
+      console.warn('No valid nodes found for thumbnail generation');
+      return null;
+    }
+
+    // Now generate thumbnail for the specific node
+    const thumbnailResponse = await fetch(
+      `https://api.figma.com/v1/images/${fileId}?ids=${nodeId}&format=png&scale=1`,
+      {
+        headers: {
+          'X-Figma-Token': token,
+        },
+      }
+    );
+
+    if (!thumbnailResponse.ok) {
+      console.error('Figma thumbnail API error:', thumbnailResponse.status, thumbnailResponse.statusText);
+      return null;
+    }
+
+    const thumbnailData = await thumbnailResponse.json();
+    
+    // Get the thumbnail URL
+    const imageUrl = thumbnailData.images?.[nodeId];
+    if (imageUrl) {
+      return {
+        url: imageUrl,
+        fileId,
+        nodeId,
+      };
+    }
+
+    console.warn('No thumbnail URL returned for node:', nodeId);
     return null;
     
   } catch (error) {
