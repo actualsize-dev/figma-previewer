@@ -25,9 +25,9 @@
   --ds-color-3: #999999;
   
   /* Borders */
-  --ds-border-4: #eaeaea;
-  --ds-border-5: #999999;
-  --ds-border-6: #888888;
+  --ds-border-4: #f0f0f0;
+  --ds-border-5: #e5e5e5;
+  --ds-border-6: #d0d0d0;
   
   /* High Contrast */
   --ds-color-7: #333333;
@@ -86,9 +86,9 @@
   --ds-color-2: #333333;
   --ds-color-3: #444444;
   
-  --ds-border-4: #333333;
-  --ds-border-5: #444444;
-  --ds-border-6: #666666;
+  --ds-border-4: #1a1a1a;
+  --ds-border-5: #262626;
+  --ds-border-6: #404040;
   
   --ds-color-7: #eaeaea;
   --ds-color-8: #fafafa;
@@ -123,6 +123,10 @@
     
     --ds-text-10: #ffffff;
     --ds-text-9: #888888;
+    
+    --ds-border-4: #1a1a1a;
+    --ds-border-5: #262626;
+    --ds-border-6: #404040;
     
     --background: var(--ds-background-100);
     --foreground: var(--ds-text-10);
@@ -213,12 +217,12 @@ body {
 .btn-secondary {
   background: var(--ds-color-1);
   color: var(--ds-text-10);
-  border-color: var(--ds-border-4);
+  border-color: var(--ds-border-5);
 }
 
 .btn-secondary:hover:not(:disabled) {
   background: var(--ds-color-2);
-  border-color: var(--ds-border-5);
+  border-color: var(--ds-border-6);
 }
 
 .btn-ghost {
