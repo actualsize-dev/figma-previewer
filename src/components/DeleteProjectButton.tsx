@@ -50,9 +50,9 @@ export default function DeleteProjectButton({
   };
 
   const getButtonClass = () => {
-    if (isDeleting) return "block w-full text-center py-2 px-4 bg-red-200 text-red-800 rounded-md text-sm cursor-not-allowed";
-    if (clickCount === 1) return "block w-full text-center py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm";
-    return "block w-full text-center py-2 px-4 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors text-sm";
+    if (isDeleting) return "btn w-full text-sm opacity-60 cursor-not-allowed";
+    if (clickCount === 1) return "btn w-full text-sm bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700";
+    return "btn btn-destructive w-full text-sm";
   };
 
   return (

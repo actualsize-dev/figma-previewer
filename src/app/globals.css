@@ -234,3 +234,27 @@ body {
   background: var(--ds-color-1);
   color: var(--ds-text-10);
 }
+
+.btn-outline {
+  background: transparent;
+  color: var(--ds-text-9);
+  border-color: var(--ds-border-5);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--ds-color-1);
+  color: var(--ds-text-10);
+  border-color: var(--ds-border-6);
+}
+
+.btn-destructive {
+  background: transparent;
+  color: var(--ds-text-9);
+  border-color: #dc2626;
+}
+
+.btn-destructive:hover:not(:disabled) {
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
+}

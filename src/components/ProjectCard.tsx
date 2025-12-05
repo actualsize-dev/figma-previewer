@@ -110,7 +110,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
             href={currentProject.figmaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-secondary w-full text-sm"
+            className="btn btn-outline w-full text-sm"
           >
             Open in Figma
           </a>

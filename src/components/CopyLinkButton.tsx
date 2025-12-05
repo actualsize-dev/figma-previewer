@@ -23,7 +23,7 @@ export default function CopyLinkButton({ slug }: CopyLinkButtonProps) {
   return (
     <button
       onClick={handleCopy}
-      className="block w-full text-center py-2 px-4 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm"
+      className="btn btn-outline w-full text-sm"
     >
       {copied ? '✓ Copied!' : 'Copy Share Link'}
     </button>

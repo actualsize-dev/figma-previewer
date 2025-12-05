@@ -87,18 +87,18 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
               duration: 0.3,
               layout: { duration: 0.4 }
             }}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+            className="bg-card border border-border rounded-lg overflow-hidden hover:border-primary/20 transition-all hover:shadow-sm"
           >
             <div className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-base font-semibold text-foreground mb-3">
                     {project.name}
                   </h3>
-                  <div className="space-y-1 text-sm text-gray-500 mb-4">
+                  <div className="space-y-1 text-sm text-muted-foreground mb-4">
                     <p>Created {new Date(project.createdAt).toLocaleDateString()}</p>
                     <p>Deleted {new Date(project.deletedAt).toLocaleDateString()}</p>
-                    <p className="font-mono text-xs text-gray-400">
+                    <p className="font-mono text-xs bg-muted px-2 py-1 rounded inline-block">
                       actualsize.digital/{project.slug}
                     </p>
                   </div>
@@ -110,20 +110,20 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       href={project.figmaUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors"
+                      className="btn btn-outline text-sm"
                     >
                       View in Figma
                     </a>
                     <button
                       onClick={() => handleRestore(project.id, project.name)}
-                      className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
+                      className="btn btn-primary text-sm"
                     >
                       Restore Project
                     </button>
                   </div>
                   <button
                     onClick={() => handlePermanentDelete(project.id, project.name)}
-                    className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors text-left"
+                    className="btn btn-destructive text-sm"
                   >
                     Permanently Delete
                   </button>
@@ -140,10 +140,10 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
           animate={{ opacity: 1 }}
           className="text-center py-8"
         >
-          <p className="text-gray-500 mb-4">All deleted projects have been restored!</p>
+          <p className="text-muted-foreground mb-4">All deleted projects have been restored!</p>
           <Link
             href="/projects"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="btn btn-primary"
           >
             Back to Projects
           </Link>
