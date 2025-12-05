@@ -1,41 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  /* Vercel Geist Design System Color Variables */
+  /* Vercel Geist Design System Color Variables - Dark Mode Default */
   
   /* Backgrounds */
-  --ds-background-100: #ffffff;
-  --ds-background-200: #fafafa;
+  --ds-background-100: #000000;
+  --ds-background-200: #111111;
   
   /* Gray Scale (Vercel's primary neutral colors) */
-  --ds-gray-100: #fafafa;
-  --ds-gray-200: #eaeaea;
-  --ds-gray-300: #999999;
-  --ds-gray-400: #888888;
-  --ds-gray-500: #666666;
-  --ds-gray-600: #444444;
-  --ds-gray-700: #333333;
-  --ds-gray-800: #111111;
-  --ds-gray-900: #000000;
-  --ds-gray-1000: #000000;
+  --ds-gray-100: #111111;
+  --ds-gray-200: #333333;
+  --ds-gray-300: #444444;
+  --ds-gray-400: #666666;
+  --ds-gray-500: #888888;
+  --ds-gray-600: #999999;
+  --ds-gray-700: #eaeaea;
+  --ds-gray-800: #fafafa;
+  --ds-gray-900: #ffffff;
+  --ds-gray-1000: #ffffff;
   
   /* Component Colors */
-  --ds-color-1: #fafafa;
-  --ds-color-2: #eaeaea;
-  --ds-color-3: #999999;
+  --ds-color-1: #111111;
+  --ds-color-2: #333333;
+  --ds-color-3: #444444;
   
   /* Borders */
-  --ds-border-4: #e8e8e8;
-  --ds-border-5: #d8d8d8;
-  --ds-border-6: #c0c0c0;
+  --ds-border-4: #2a2a2a;
+  --ds-border-5: #3a3a3a;
+  --ds-border-6: #4a4a4a;
   
   /* High Contrast */
-  --ds-color-7: #333333;
-  --ds-color-8: #111111;
+  --ds-color-7: #eaeaea;
+  --ds-color-8: #fafafa;
   
   /* Text */
-  --ds-text-9: #666666;
-  --ds-text-10: #000000;
+  --ds-text-9: #888888;
+  --ds-text-10: #ffffff;
   
   /* Blue (Vercel brand color) */
   --ds-blue-100: #e6f7ff;
@@ -77,45 +77,45 @@
   --accent-foreground: var(--ds-text-10);
   --card: var(--ds-background-100);
   --card-foreground: var(--ds-text-10);
-  --ds-outline-hover: #e0e0e0;
-  --ds-card-hover-border: #b0b0b0;
+  --ds-outline-hover: #404040;
+  --ds-card-hover-border: #606060;
   --radius: 6px;
 }
 
-/* Dark mode */
-[data-theme="dark"] {
-  --ds-background-100: #000000;
-  --ds-background-200: #111111;
+/* Light mode override (if explicitly requested) */
+[data-theme="light"] {
+  --ds-background-100: #ffffff;
+  --ds-background-200: #fafafa;
   
-  --ds-gray-100: #111111;
-  --ds-gray-200: #333333;
-  --ds-gray-300: #444444;
-  --ds-gray-400: #666666;
-  --ds-gray-500: #888888;
-  --ds-gray-600: #999999;
-  --ds-gray-700: #eaeaea;
-  --ds-gray-800: #fafafa;
-  --ds-gray-900: #ffffff;
-  --ds-gray-1000: #ffffff;
+  --ds-gray-100: #fafafa;
+  --ds-gray-200: #eaeaea;
+  --ds-gray-300: #999999;
+  --ds-gray-400: #888888;
+  --ds-gray-500: #666666;
+  --ds-gray-600: #444444;
+  --ds-gray-700: #333333;
+  --ds-gray-800: #111111;
+  --ds-gray-900: #000000;
+  --ds-gray-1000: #000000;
   
-  --ds-color-1: #111111;
-  --ds-color-2: #333333;
-  --ds-color-3: #444444;
+  --ds-color-1: #fafafa;
+  --ds-color-2: #eaeaea;
+  --ds-color-3: #999999;
   
-  --ds-border-4: #2a2a2a;
-  --ds-border-5: #3a3a3a;
-  --ds-border-6: #4a4a4a;
+  --ds-border-4: #e8e8e8;
+  --ds-border-5: #d8d8d8;
+  --ds-border-6: #c0c0c0;
   
-  --ds-color-7: #eaeaea;
-  --ds-color-8: #fafafa;
+  --ds-color-7: #333333;
+  --ds-color-8: #111111;
   
-  --ds-text-9: #888888;
-  --ds-text-10: #ffffff;
+  --ds-text-9: #666666;
+  --ds-text-10: #000000;
   
-  --ds-outline-hover: #404040;
-  --ds-card-hover-border: #606060;
+  --ds-outline-hover: #e0e0e0;
+  --ds-card-hover-border: #b0b0b0;
   
-  /* Dark mode client category colors */
+  /* Light mode client category colors */
   --ds-category-blue-bg: #10233D;
   --ds-category-blue-text: #0070F3;
   --ds-category-orange-bg: #ff8c00;
@@ -138,38 +138,7 @@
   --card-foreground: var(--ds-text-10);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ds-background-100: #000000;
-    --ds-background-200: #111111;
-    
-    --ds-gray-100: #111111;
-    --ds-gray-200: #333333;
-    --ds-gray-300: #444444;
-    --ds-gray-400: #666666;
-    --ds-gray-500: #888888;
-    --ds-gray-600: #999999;
-    --ds-gray-700: #eaeaea;
-    --ds-gray-800: #fafafa;
-    --ds-gray-900: #ffffff;
-    --ds-gray-1000: #ffffff;
-    
-    --ds-text-10: #ffffff;
-    --ds-text-9: #888888;
-    
-    --ds-border-4: #2a2a2a;
-    --ds-border-5: #3a3a3a;
-    --ds-border-6: #4a4a4a;
-    --ds-outline-hover: #404040;
-    --ds-card-hover-border: #606060;
-    
-    --background: var(--ds-background-100);
-    --foreground: var(--ds-text-10);
-    --muted: var(--ds-background-200);
-    --muted-foreground: var(--ds-text-9);
-    --border: var(--ds-border-4);
-  }
-}
+/* Removed media query - dark mode is now the default for all users */
 
 @theme inline {
   --color-background: var(--background);
