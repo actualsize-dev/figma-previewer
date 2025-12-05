@@ -5,7 +5,7 @@ export default function BrandingFooter() {
   return (
     <footer className="w-full py-8 mt-auto border-t border-gray-200 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 flex flex-col items-center">
-        <p className="text-xs text-gray-500 mb-3 uppercase tracking-wider">
+        <p className="text-gray-500 mb-3 uppercase tracking-wider" style={{ fontSize: '10px' }}>
           Powered by
         </p>
         <Link 
@@ -17,9 +17,9 @@ export default function BrandingFooter() {
           <Image
             src="/actual-size-logo.svg"
             alt="Actual Size"
-            width={120}
-            height={87}
-            className="h-8 w-auto"
+            width={240}
+            height={174}
+            className="h-16 w-auto"
           />
         </Link>
       </div>
