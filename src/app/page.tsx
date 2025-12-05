@@ -82,7 +82,7 @@ export default function HomePage() {
             <nav className="flex items-center space-x-6">
               <a 
                 href="/projects" 
-                className="btn btn-ghost text-sm"
+                className="btn btn-subtle text-sm"
               >
                 Projects
               </a>
@@ -168,7 +168,7 @@ export default function HomePage() {
           {/* Additional info */}
           <div className="mt-8 text-center">
             <p className="text-sm text-muted-foreground">
-              Already have projects? <a href="/projects" className="text-primary hover:underline font-medium">View all projects →</a>
+              Already have projects? <a href="/projects" className="btn btn-subtle text-sm inline">View all projects →</a>
             </p>
           </div>
         </div>

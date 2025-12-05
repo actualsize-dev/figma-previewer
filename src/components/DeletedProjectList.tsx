@@ -123,7 +123,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                   </div>
                   <button
                     onClick={() => handlePermanentDelete(project.id, project.name)}
-                    className="btn btn-subtle text-sm"
+                    className="btn btn-destructive text-sm"
                   >
                     Permanently Delete
                   </button>

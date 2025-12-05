@@ -258,9 +258,9 @@ body {
 }
 
 .btn-destructive:hover:not(:disabled) {
-  background: var(--ds-outline-hover);
-  color: var(--ds-text-10);
-  border-color: transparent;
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
 }
 
 .btn-subtle {
