@@ -258,7 +258,19 @@ body {
 }
 
 .btn-destructive:hover:not(:disabled) {
-  background: #dc2626;
-  color: black;
-  border-color: #dc2626;
+  background: var(--ds-outline-hover);
+  color: var(--ds-text-10);
+  border-color: transparent;
+}
+
+.btn-subtle {
+  background: transparent;
+  color: var(--ds-text-9);
+  border-color: transparent;
+}
+
+.btn-subtle:hover:not(:disabled) {
+  background: var(--ds-outline-hover);
+  color: var(--ds-text-10);
+  border-color: transparent;
 }

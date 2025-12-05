@@ -52,7 +52,7 @@ export default function DeleteProjectButton({
   const getButtonClass = () => {
     if (isDeleting) return "btn w-full text-sm opacity-60 cursor-not-allowed";
     if (clickCount === 1) return "btn w-full text-sm bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700";
-    return "btn btn-destructive w-full text-sm";
+    return "btn btn-subtle w-full text-sm";
   };
 
   return (

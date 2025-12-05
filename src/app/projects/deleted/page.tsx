@@ -52,7 +52,7 @@ export default async function DeletedProjectsPage() {
             <div className="flex items-center space-x-4">
               <Link
                 href="/projects"
-                className="btn btn-ghost text-sm"
+                className="btn btn-subtle text-sm"
               >
                 ← Back to Projects
               </Link>
@@ -79,7 +79,7 @@ export default async function DeletedProjectsPage() {
               </p>
               <Link
                 href="/projects"
-                className="btn btn-primary"
+                className="btn btn-subtle"
               >
                 Back to Projects
               </Link>
