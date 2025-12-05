@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
+import FigmaThumbnail from './FigmaThumbnail';
 
 type DeletedProject = {
   id: string;
@@ -110,9 +111,17 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                 </p>
               </div>
               
-              <p className="text-xs text-muted-foreground mb-6 font-mono bg-muted px-2 py-1 rounded inline-block">
+              <p className="text-xs text-muted-foreground mb-4 font-mono bg-muted px-2 py-1 rounded inline-block">
                 actualsize.digital/{project.slug}
               </p>
+              
+              <div className="mb-6">
+                <FigmaThumbnail 
+                  figmaUrl={project.figmaUrl}
+                  alt={`${project.name} Figma design preview`}
+                  className="w-full h-48 border border-border"
+                />
+              </div>
               
               <div className="space-y-2">
                 <button

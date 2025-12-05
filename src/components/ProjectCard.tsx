@@ -6,6 +6,7 @@ import CopyLinkButton from './CopyLinkButton';
 import DeleteProjectButton from './DeleteProjectButton';
 import EditableClientLabel from './EditableClientLabel';
 import InlineEdit from './InlineEdit';
+import FigmaThumbnail from './FigmaThumbnail';
 
 type Project = {
   id: string;
@@ -94,9 +95,17 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
           </p>
         </div>
         
-        <p className="text-xs text-muted-foreground mb-6 font-mono bg-muted px-2 py-1 rounded inline-block">
+        <p className="text-xs text-muted-foreground mb-4 font-mono bg-muted px-2 py-1 rounded inline-block">
           actualsize.digital/{currentProject.slug}
         </p>
+        
+        <div className="mb-6">
+          <FigmaThumbnail 
+            figmaUrl={currentProject.figmaUrl}
+            alt={`${currentProject.name} Figma design preview`}
+            className="w-full h-48 border border-border"
+          />
+        </div>
         
         <div className="space-y-2">
           <Link
