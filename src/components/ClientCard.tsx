@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import InlineEdit from './InlineEdit';
 import ShareLinksManager from './ShareLinksManager';
-import { Folder, ExternalLink } from 'lucide-react';
+import AddProjectModal from './AddProjectModal';
+import { Folder, ExternalLink, Plus } from 'lucide-react';
 
 type Client = {
   label: string;
@@ -14,10 +15,12 @@ type Client = {
 interface ClientCardProps {
   client: Client;
   onClientUpdated?: (oldLabel: string, newLabel: string) => void;
+  onProjectAdded?: () => void;
 }
 
-export default function ClientCard({ client, onClientUpdated }: ClientCardProps) {
+export default function ClientCard({ client, onClientUpdated, onProjectAdded }: ClientCardProps) {
   const [currentLabel, setCurrentLabel] = useState(client.label);
+  const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
 
   const handleLabelUpdate = async (newLabel: string) => {
     try {
@@ -74,6 +77,14 @@ export default function ClientCard({ client, onClientUpdated }: ClientCardProps)
           <span className="text-sm font-medium text-foreground">{client.projectCount}</span>
         </div>
 
+        <button
+          onClick={() => setIsAddProjectModalOpen(true)}
+          className="btn btn-primary w-full text-sm flex items-center justify-center gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          Add Project
+        </button>
+
         <Link
           href={`/projects?client=${encodeURIComponent(currentLabel)}`}
           className="btn btn-outline w-full text-sm flex items-center justify-center gap-2"
@@ -86,6 +97,17 @@ export default function ClientCard({ client, onClientUpdated }: ClientCardProps)
           <ShareLinksManager clientLabel={currentLabel} />
         </div>
       </div>
+
+      <AddProjectModal
+        clientLabel={currentLabel}
+        isOpen={isAddProjectModalOpen}
+        onClose={() => setIsAddProjectModalOpen(false)}
+        onProjectAdded={() => {
+          if (onProjectAdded) {
+            onProjectAdded();
+          }
+        }}
+      />
     </div>
   );
 }

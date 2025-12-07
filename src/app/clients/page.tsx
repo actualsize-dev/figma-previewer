@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import ClientCard from '@/components/ClientCard';
+import NewClientCard from '@/components/NewClientCard';
 import BrandingFooter from '@/components/BrandingFooter';
 import { Grid3x3, List } from 'lucide-react';
 
@@ -69,6 +70,25 @@ export default function ClientsPage() {
           : project
       )
     );
+  };
+
+  const handleProjectAdded = async () => {
+    // Refresh projects list
+    try {
+      const response = await fetch('/api/projects');
+      const data = await response.json();
+      setProjects(data.projects || []);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    }
+  };
+
+  const handleNewClient = () => {
+    const clientName = prompt('Enter new client name:');
+    if (clientName && clientName.trim()) {
+      // Create a dummy project for this client (will be replaced by proper modal later)
+      alert(`Client "${clientName}" will be created. Add a project for this client to make it appear in the list.`);
+    }
   };
 
   return (
@@ -258,11 +278,15 @@ export default function ClientsPage() {
                       : 'space-y-4'
                   }
                 >
+                  {viewMode === 'grid' && (
+                    <NewClientCard onProjectAdded={handleProjectAdded} />
+                  )}
                   {filteredClients.map((client) => (
                     <ClientCard
                       key={client.label}
                       client={client}
                       onClientUpdated={handleClientUpdated}
+                      onProjectAdded={handleProjectAdded}
                     />
                   ))}
                 </div>
