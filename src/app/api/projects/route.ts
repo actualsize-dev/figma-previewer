@@ -11,11 +11,11 @@ export async function GET() {
         createdAt: 'desc'
       }
     });
-    
-    return NextResponse.json(projects);
+
+    return NextResponse.json({ projects });
   } catch (error) {
     console.error('Error reading projects:', error);
-    return NextResponse.json([], { status: 500 });
+    return NextResponse.json({ projects: [] }, { status: 500 });
   }
 }
 
