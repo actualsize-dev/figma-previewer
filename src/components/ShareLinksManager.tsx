@@ -14,9 +14,10 @@ type ShareLink = {
 
 interface ShareLinksManagerProps {
   clientLabel: string;
+  compact?: boolean;
 }
 
-export default function ShareLinksManager({ clientLabel }: ShareLinksManagerProps) {
+export default function ShareLinksManager({ clientLabel, compact = false }: ShareLinksManagerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [shareLink, setShareLink] = useState<ShareLink | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -112,6 +113,18 @@ export default function ShareLinksManager({ clientLabel }: ShareLinksManagerProp
   };
 
   if (!isOpen) {
+    if (compact) {
+      return (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="btn btn-outline text-xs px-3 py-1 whitespace-nowrap"
+          title="Share"
+        >
+          <Share2 className="w-3 h-3" />
+        </button>
+      );
+    }
+
     return (
       <button
         onClick={() => setIsOpen(true)}

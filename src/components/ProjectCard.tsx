@@ -97,7 +97,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
           <div className="flex items-center gap-2 flex-shrink-0">
             <Link
               href={`/${currentProject.slug}`}
-              className="btn btn-primary text-xs px-3 py-1"
+              className="btn btn-primary text-xs px-3 py-1 whitespace-nowrap"
             >
               View
             </Link>

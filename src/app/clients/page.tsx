@@ -287,6 +287,7 @@ export default function ClientsPage() {
                       client={client}
                       onClientUpdated={handleClientUpdated}
                       onProjectAdded={handleProjectAdded}
+                      compact={viewMode === 'list'}
                     />
                   ))}
                 </div>

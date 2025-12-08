@@ -16,9 +16,10 @@ interface ClientCardProps {
   client: Client;
   onClientUpdated?: (oldLabel: string, newLabel: string) => void;
   onProjectAdded?: () => void;
+  compact?: boolean;
 }
 
-export default function ClientCard({ client, onClientUpdated, onProjectAdded }: ClientCardProps) {
+export default function ClientCard({ client, onClientUpdated, onProjectAdded, compact = false }: ClientCardProps) {
   const [currentLabel, setCurrentLabel] = useState(client.label);
   const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
 
@@ -51,6 +52,54 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded }: 
       throw error;
     }
   };
+
+  if (compact) {
+    return (
+      <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20">
+        <div className="flex items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-1">
+              <InlineEdit
+                value={currentLabel}
+                onSave={handleLabelUpdate}
+                className="text-sm font-semibold text-foreground"
+                inputClassName="text-sm font-semibold"
+                placeholder="Client name..."
+              />
+              <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded whitespace-nowrap">
+                {client.projectCount} {client.projectCount === 1 ? 'project' : 'projects'}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => setIsAddProjectModalOpen(true)}
+              className="btn btn-primary text-xs px-3 py-1 whitespace-nowrap"
+            >
+              Add Project
+            </button>
+            <Link
+              href={`/projects?client=${encodeURIComponent(currentLabel)}`}
+              className="btn btn-outline text-xs px-3 py-1 whitespace-nowrap"
+            >
+              View Projects
+            </Link>
+            <ShareLinksManager clientLabel={currentLabel} compact />
+          </div>
+        </div>
+        <AddProjectModal
+          clientLabel={currentLabel}
+          isOpen={isAddProjectModalOpen}
+          onClose={() => setIsAddProjectModalOpen(false)}
+          onProjectAdded={() => {
+            if (onProjectAdded) {
+              onProjectAdded();
+            }
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-card border border-border rounded-lg p-6 transition-all hover:shadow-sm">
