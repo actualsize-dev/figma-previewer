@@ -72,7 +72,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
 
   if (compact) {
     return (
-      <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20">
+      <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20 overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-1 flex-wrap">
@@ -94,19 +94,19 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
               <span className="font-mono truncate">actualsize.digital/{currentProject.slug}</span>
             </div>
           </div>
-          <div className="flex sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto">
+          <div className="flex sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto min-w-0">
             <Link
               href={`/${currentProject.slug}`}
-              className="btn btn-primary text-xs px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center"
+              className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
             >
               View
             </Link>
-            <CopyLinkButton slug={currentProject.slug} className="flex-1 sm:flex-none" />
+            <CopyLinkButton slug={currentProject.slug} className="text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0" />
             <DeleteProjectButton
               projectId={currentProject.id}
               projectName={currentProject.name}
               onDelete={onProjectDeleted}
-              className="flex-1 sm:flex-none"
+              className="flex-1 sm:flex-none min-w-0"
             />
           </div>
         </div>

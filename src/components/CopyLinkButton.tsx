@@ -24,7 +24,7 @@ export default function CopyLinkButton({ slug, className = '' }: CopyLinkButtonP
   return (
     <button
       onClick={handleCopy}
-      className={`btn btn-outline w-full text-sm ${className}`}
+      className={`btn btn-outline ${className || 'w-full text-sm'}`}
     >
       {copied ? '✓ Copied!' : 'Copy Share Link'}
     </button>
