@@ -77,7 +77,7 @@
   --accent-foreground: var(--ds-text-10);
   --card: var(--ds-background-100);
   --card-foreground: var(--ds-text-10);
-  --ds-outline-hover: #404040;
+  --ds-outline-hover: #2a2a2a;
   --ds-card-hover-border: #606060;
   --radius: 6px;
 }
@@ -273,6 +273,17 @@ body {
   background: var(--ds-outline-hover);
   color: var(--ds-text-10);
   border-color: transparent;
+}
+
+.nav-link {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+  background: var(--ds-outline-hover);
+  color: var(--ds-text-10);
 }
 
 .project-card:hover {

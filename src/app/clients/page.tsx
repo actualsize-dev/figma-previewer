@@ -101,20 +101,20 @@ export default function ClientsPage() {
               <Link href="/" className="text-xl font-semibold text-foreground hover:text-muted-foreground transition-colors">
                 Figma Concierge
               </Link>
-              <nav className="flex items-center space-x-6">
+              <nav className="flex items-center space-x-2">
                 <Link
                   href="/projects"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground nav-link"
                 >
                   Projects
                 </Link>
-                <span className="text-sm font-medium text-foreground relative">
+                <span className="text-sm font-medium text-foreground relative px-3 py-1.5">
                   Clients
                   <div className="absolute bottom-[-16px] left-0 right-0 h-0.5 bg-foreground"></div>
                 </span>
                 <Link
                   href="/projects/deleted"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground nav-link"
                 >
                   Deleted
                 </Link>
@@ -138,20 +138,20 @@ export default function ClientsPage() {
               </Link>
             </div>
             <div className="pb-4">
-              <nav className="flex items-center space-x-6">
+              <nav className="flex items-center space-x-2">
                 <Link
                   href="/projects"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground nav-link"
                 >
                   Projects
                 </Link>
-                <span className="text-sm font-medium text-foreground relative">
+                <span className="text-sm font-medium text-foreground relative px-3 py-1.5">
                   Clients
                   <div className="absolute bottom-[-20px] left-0 right-0 h-0.5 bg-foreground"></div>
                 </span>
                 <Link
                   href="/projects/deleted"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground nav-link"
                 >
                   Deleted
                 </Link>
