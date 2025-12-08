@@ -17,10 +17,11 @@ type Project = {
 
 interface ProjectsWithGroupingProps {
   projects: Project[];
+  initialSelectedClient?: string;
 }
 
-export default function ProjectsWithGrouping({ projects }: ProjectsWithGroupingProps) {
-  const [selectedClient, setSelectedClient] = useState<string>('all');
+export default function ProjectsWithGrouping({ projects, initialSelectedClient }: ProjectsWithGroupingProps) {
+  const [selectedClient, setSelectedClient] = useState<string>(initialSelectedClient || 'all');
   const [sortBy, setSortBy] = useState<'date' | 'client'>('date');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');

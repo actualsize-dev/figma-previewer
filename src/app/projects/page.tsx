@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import ProjectsWithGrouping from '@/components/ProjectsWithGrouping';
+import { Suspense } from 'react';
+import ProjectsPageClient from '@/components/ProjectsPageClient';
 import BrandingFooter from '@/components/BrandingFooter';
 import { prisma } from '@/lib/db';
 
@@ -150,10 +151,12 @@ export default async function ProjectsPage() {
                 </div>
               </div>
               
-              <ProjectsWithGrouping projects={projects.map(project => ({
-                ...project,
-                createdAt: project.createdAt.toISOString()
-              }))} />
+              <Suspense fallback={<div>Loading...</div>}>
+                <ProjectsPageClient projects={projects.map(project => ({
+                  ...project,
+                  createdAt: project.createdAt.toISOString()
+                }))} />
+              </Suspense>
             </div>
           )}
         </div>
