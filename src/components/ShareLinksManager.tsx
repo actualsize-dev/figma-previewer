@@ -128,7 +128,7 @@ export default function ShareLinksManager({ clientLabel, compact = false }: Shar
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground nav-link"
         title="Generate share link"
       >
         <Share2 className="w-4 h-4" />
