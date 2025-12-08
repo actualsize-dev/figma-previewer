@@ -22,6 +22,35 @@ interface ClientCardProps {
 export default function ClientCard({ client, onClientUpdated, onProjectAdded, compact = false }: ClientCardProps) {
   const [currentLabel, setCurrentLabel] = useState(client.label);
   const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (clickCount === 0) {
+      setClickCount(1);
+      setTimeout(() => setClickCount(0), 3000);
+    } else if (clickCount === 1) {
+      setIsDeleting(true);
+
+      try {
+        const response = await fetch(`/api/clients/${encodeURIComponent(currentLabel)}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete client');
+        }
+
+        // Refresh the page to show updated client list
+        window.location.reload();
+      } catch (error) {
+        console.error('Error deleting client:', error);
+        alert('Failed to delete client. Please try again.');
+        setIsDeleting(false);
+        setClickCount(0);
+      }
+    }
+  };
 
   const handleLabelUpdate = async (newLabel: string) => {
     try {
@@ -85,6 +114,19 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
               View Projects
             </Link>
             <ShareLinksManager clientLabel={currentLabel} compact />
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className={`btn text-xs px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center ${
+                isDeleting
+                  ? 'opacity-60 cursor-not-allowed'
+                  : clickCount === 1
+                  ? 'bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700'
+                  : 'btn-destructive'
+              }`}
+            >
+              {isDeleting ? 'Deleting...' : clickCount === 1 ? 'Confirm' : 'Delete'}
+            </button>
           </div>
         </div>
         <AddProjectModal
@@ -141,6 +183,20 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
           <ExternalLink className="w-4 h-4" />
           View Projects
         </Link>
+
+        <button
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className={`btn w-full text-sm flex items-center justify-center gap-2 ${
+            isDeleting
+              ? 'opacity-60 cursor-not-allowed'
+              : clickCount === 1
+              ? 'bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700'
+              : 'btn-destructive'
+          }`}
+        >
+          {isDeleting ? 'Deleting Client...' : clickCount === 1 ? 'Confirm Delete Client' : 'Delete Client'}
+        </button>
 
         <div className="pt-2 border-t border-border">
           <ShareLinksManager clientLabel={currentLabel} />
