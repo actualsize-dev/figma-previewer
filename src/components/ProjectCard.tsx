@@ -73,13 +73,13 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
   if (compact) {
     return (
       <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-1">
+            <div className="flex items-center gap-3 mb-1 flex-wrap">
               <InlineEdit
                 value={currentProject.name}
                 onSave={handleNameUpdate}
-                className="text-sm font-semibold text-foreground"
+                className="text-sm font-semibold text-foreground truncate"
                 inputClassName="text-sm font-semibold"
                 placeholder="Project name..."
               />
@@ -89,23 +89,24 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
                 onLabelUpdate={handleLabelUpdate}
               />
             </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <span>Created {new Date(currentProject.createdAt).toLocaleDateString()}</span>
-              <span className="font-mono">actualsize.digital/{currentProject.slug}</span>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+              <span className="whitespace-nowrap">Created {new Date(currentProject.createdAt).toLocaleDateString()}</span>
+              <span className="font-mono truncate">actualsize.digital/{currentProject.slug}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto">
             <Link
               href={`/${currentProject.slug}`}
-              className="btn btn-primary text-xs px-3 py-1 whitespace-nowrap"
+              className="btn btn-primary text-xs px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center"
             >
               View
             </Link>
-            <CopyLinkButton slug={currentProject.slug} />
+            <CopyLinkButton slug={currentProject.slug} className="flex-1 sm:flex-none" />
             <DeleteProjectButton
               projectId={currentProject.id}
               projectName={currentProject.name}
               onDelete={onProjectDeleted}
+              className="flex-1 sm:flex-none"
             />
           </div>
         </div>

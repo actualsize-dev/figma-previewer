@@ -151,24 +151,24 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
             {viewMode === 'list' ? (
               // Compact list view
               <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-sm font-semibold text-foreground">{project.name}</h3>
-                      <div className="text-xs px-2 py-0.5 bg-muted text-muted-foreground rounded">
+                    <div className="flex items-center gap-3 mb-1 flex-wrap">
+                      <h3 className="text-sm font-semibold text-foreground truncate">{project.name}</h3>
+                      <div className="text-xs px-2 py-0.5 bg-muted text-muted-foreground rounded whitespace-nowrap">
                         Deleted
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>Created {new Date(project.createdAt).toLocaleDateString()}</span>
-                      <span>Deleted {new Date(project.deletedAt).toLocaleDateString()}</span>
-                      <span className="font-mono">actualsize.digital/{project.slug}</span>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+                      <span className="whitespace-nowrap">Created {new Date(project.createdAt).toLocaleDateString()}</span>
+                      <span className="whitespace-nowrap">Deleted {new Date(project.deletedAt).toLocaleDateString()}</span>
+                      <span className="font-mono truncate">actualsize.digital/{project.slug}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto">
                     <button
                       onClick={() => handleRestore(project.id, project.name)}
-                      className="btn btn-primary text-xs px-3 py-1"
+                      className="btn btn-primary text-xs px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center"
                     >
                       Restore
                     </button>
@@ -176,13 +176,13 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       href={project.figmaUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-outline text-xs px-3 py-1"
+                      className="btn btn-outline text-xs px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center"
                     >
                       Figma
                     </a>
                     <button
                       onClick={() => handlePermanentDelete(project.id, project.name)}
-                      className="btn btn-destructive text-xs px-3 py-1"
+                      className="btn btn-destructive text-xs px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center"
                     >
                       Delete
                     </button>

@@ -6,12 +6,14 @@ interface DeleteProjectButtonProps {
   projectId: string;
   projectName: string;
   onDelete: (id: string) => void;
+  className?: string;
 }
 
-export default function DeleteProjectButton({ 
-  projectId, 
-  projectName, 
-  onDelete 
+export default function DeleteProjectButton({
+  projectId,
+  projectName,
+  onDelete,
+  className = ''
 }: DeleteProjectButtonProps) {
   const [clickCount, setClickCount] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -23,7 +25,7 @@ export default function DeleteProjectButton({
       setTimeout(() => setClickCount(0), 3000);
     } else if (clickCount === 1) {
       setIsDeleting(true);
-      
+
       try {
         const response = await fetch(`/api/projects/${projectId}`, {
           method: 'DELETE',
@@ -50,9 +52,10 @@ export default function DeleteProjectButton({
   };
 
   const getButtonClass = () => {
-    if (isDeleting) return "btn w-full text-sm opacity-60 cursor-not-allowed";
-    if (clickCount === 1) return "btn w-full text-sm bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700";
-    return "btn btn-destructive w-full text-sm";
+    const base = `btn w-full text-sm ${className}`;
+    if (isDeleting) return `${base} opacity-60 cursor-not-allowed`;
+    if (clickCount === 1) return `${base} bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700`;
+    return `${base} btn-destructive`;
   };
 
   return (

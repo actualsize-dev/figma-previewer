@@ -56,13 +56,13 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
   if (compact) {
     return (
       <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-1">
+            <div className="flex items-center gap-3 mb-1 flex-wrap">
               <InlineEdit
                 value={currentLabel}
                 onSave={handleLabelUpdate}
-                className="text-sm font-semibold text-foreground"
+                className="text-sm font-semibold text-foreground truncate"
                 inputClassName="text-sm font-semibold"
                 placeholder="Client name..."
               />
@@ -71,16 +71,16 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto">
             <button
               onClick={() => setIsAddProjectModalOpen(true)}
-              className="btn btn-primary text-xs px-3 py-1 whitespace-nowrap"
+              className="btn btn-primary text-xs px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center"
             >
               Add Project
             </button>
             <Link
               href={`/projects?client=${encodeURIComponent(currentLabel)}`}
-              className="btn btn-outline text-xs px-3 py-1 whitespace-nowrap"
+              className="btn btn-outline text-xs px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center"
             >
               View Projects
             </Link>

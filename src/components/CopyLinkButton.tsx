@@ -4,9 +4,10 @@ import { useState } from 'react';
 
 interface CopyLinkButtonProps {
   slug: string;
+  className?: string;
 }
 
-export default function CopyLinkButton({ slug }: CopyLinkButtonProps) {
+export default function CopyLinkButton({ slug, className = '' }: CopyLinkButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -23,7 +24,7 @@ export default function CopyLinkButton({ slug }: CopyLinkButtonProps) {
   return (
     <button
       onClick={handleCopy}
-      className="btn btn-outline w-full text-sm"
+      className={`btn btn-outline w-full text-sm ${className}`}
     >
       {copied ? '✓ Copied!' : 'Copy Share Link'}
     </button>
