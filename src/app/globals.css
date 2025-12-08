@@ -48,14 +48,14 @@
   --ds-category-blue-text: #0070F3;
   --ds-category-orange-bg: #291800;
   --ds-category-orange-text: #E5990C;
-  --ds-category-green-bg: #00a86b;
-  --ds-category-green-text: #ffffff;
-  --ds-category-purple-bg: #8b5cf6;
-  --ds-category-purple-text: #ffffff;
-  --ds-category-pink-bg: #e91e63;
-  --ds-category-pink-text: #ffffff;
-  --ds-category-teal-bg: #14b8a6;
-  --ds-category-teal-text: #ffffff;
+  --ds-category-green-bg: #0A2818;
+  --ds-category-green-text: #10B981;
+  --ds-category-purple-bg: #2D1B4E;
+  --ds-category-purple-text: #A78BFA;
+  --ds-category-pink-bg: #3D1726;
+  --ds-category-pink-text: #F472B6;
+  --ds-category-teal-bg: #0B3A3A;
+  --ds-category-teal-text: #2DD4BF;
   
   /* Semantic Colors */
   --ds-success: #00a86b;
