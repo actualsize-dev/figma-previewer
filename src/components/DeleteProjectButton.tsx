@@ -54,7 +54,7 @@ export default function DeleteProjectButton({
   };
 
   const getButtonClass = () => {
-    const base = `btn w-full text-sm ${className}`;
+    const base = `btn ${className || 'w-full text-sm'}`;
     if (isDeleting) return `${base} opacity-60 cursor-not-allowed`;
     if (clickCount === 1) return `${base} bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700`;
     return `${base} btn-destructive`;
