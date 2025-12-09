@@ -44,6 +44,42 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ token: string }> }
+) {
+  try {
+    const { token } = await params;
+    const body = await request.json();
+    const { expiresAt } = body;
+
+    // expiresAt can be a date string or null (for never expire)
+    const updatedShareLink = await prisma.shareLink.update({
+      where: { token },
+      data: {
+        expiresAt: expiresAt ? new Date(expiresAt) : null,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      shareLink: {
+        id: updatedShareLink.id,
+        token: updatedShareLink.token,
+        clientLabel: updatedShareLink.clientLabel,
+        expiresAt: updatedShareLink.expiresAt,
+        createdAt: updatedShareLink.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error('Error updating share link:', error);
+    return NextResponse.json(
+      { error: 'Failed to update share link' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ token: string }> }

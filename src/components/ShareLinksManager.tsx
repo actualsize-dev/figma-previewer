@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Share2, Copy, Check, Trash2, ExternalLink } from 'lucide-react';
+import { Share2, Copy, Check, Trash2, ExternalLink, Edit2 } from 'lucide-react';
 
 type ShareLink = {
   id: string;
@@ -11,6 +11,8 @@ type ShareLink = {
   createdAt: string;
   url: string;
 };
+
+type ExpirationOption = 'never' | '1day' | '1week' | 'custom';
 
 interface ShareLinksManagerProps {
   clientLabel: string;
@@ -24,6 +26,9 @@ export default function ShareLinksManager({ clientLabel, compact = false }: Shar
   const [isFetching, setIsFetching] = useState(false);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [expirationOption, setExpirationOption] = useState<ExpirationOption>('never');
+  const [customDate, setCustomDate] = useState('');
 
   // Fetch existing share link when modal opens
   useEffect(() => {
@@ -52,11 +57,44 @@ export default function ShareLinksManager({ clientLabel, compact = false }: Shar
     fetchExistingLink();
   }, [isOpen, clientLabel]);
 
+  const calculateExpirationDate = (): Date | null => {
+    if (expirationOption === 'never') {
+      return null;
+    } else if (expirationOption === '1day') {
+      const date = new Date();
+      date.setDate(date.getDate() + 1);
+      return date;
+    } else if (expirationOption === '1week') {
+      const date = new Date();
+      date.setDate(date.getDate() + 7);
+      return date;
+    } else if (expirationOption === 'custom' && customDate) {
+      return new Date(customDate);
+    }
+    return null;
+  };
+
   const generateShareLink = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
+      let expiresInDays = null;
+      if (expirationOption === '1day') {
+        expiresInDays = 1;
+      } else if (expirationOption === '1week') {
+        expiresInDays = 7;
+      } else if (expirationOption === 'custom' && customDate) {
+        const now = new Date();
+        const target = new Date(customDate);
+        const diffTime = target.getTime() - now.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays <= 0) {
+          throw new Error('Custom date must be in the future');
+        }
+        expiresInDays = diffDays;
+      }
+
       const response = await fetch('/api/share/create', {
         method: 'POST',
         headers: {
@@ -64,7 +102,7 @@ export default function ShareLinksManager({ clientLabel, compact = false }: Shar
         },
         body: JSON.stringify({
           clientLabel,
-          expiresInDays: null, // No expiration by default
+          expiresInDays,
         }),
       });
 
@@ -75,8 +113,54 @@ export default function ShareLinksManager({ clientLabel, compact = false }: Shar
       }
 
       setShareLink(data.shareLink);
+      setIsEditing(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create share link');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateShareLink = async () => {
+    if (!shareLink) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      if (expirationOption === 'custom' && customDate) {
+        const now = new Date();
+        const target = new Date(customDate);
+        if (target <= now) {
+          throw new Error('Custom date must be in the future');
+        }
+      }
+
+      const expiresAt = calculateExpirationDate();
+
+      const response = await fetch(`/api/share/${shareLink.token}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          expiresAt: expiresAt ? expiresAt.toISOString() : null,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update share link');
+      }
+
+      setShareLink({
+        ...shareLink,
+        expiresAt: data.shareLink.expiresAt,
+      });
+      setIsEditing(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update share link');
     } finally {
       setIsLoading(false);
     }
@@ -178,20 +262,87 @@ export default function ShareLinksManager({ clientLabel, compact = false }: Shar
               </p>
             </div>
           ) : !shareLink ? (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                <Share2 className="w-8 h-8 text-muted-foreground" />
+            <div className="space-y-6">
+              <div className="text-center py-4">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Share2 className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  No Active Share Link
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                  Generate a secure share link to give clients access to all projects under {clientLabel}.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                No Active Share Link
-              </h3>
-              <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                Generate a secure share link to give clients access to all projects under {clientLabel}.
-              </p>
+
+              {/* Expiration options */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-3">
+                  Expiration
+                </label>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                    <input
+                      type="radio"
+                      name="expiration"
+                      value="never"
+                      checked={expirationOption === 'never'}
+                      onChange={(e) => setExpirationOption(e.target.value as ExpirationOption)}
+                      className="w-4 h-4 text-primary"
+                    />
+                    <span className="text-sm text-foreground">Never expire</span>
+                  </label>
+                  <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                    <input
+                      type="radio"
+                      name="expiration"
+                      value="1day"
+                      checked={expirationOption === '1day'}
+                      onChange={(e) => setExpirationOption(e.target.value as ExpirationOption)}
+                      className="w-4 h-4 text-primary"
+                    />
+                    <span className="text-sm text-foreground">1 day</span>
+                  </label>
+                  <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                    <input
+                      type="radio"
+                      name="expiration"
+                      value="1week"
+                      checked={expirationOption === '1week'}
+                      onChange={(e) => setExpirationOption(e.target.value as ExpirationOption)}
+                      className="w-4 h-4 text-primary"
+                    />
+                    <span className="text-sm text-foreground">1 week</span>
+                  </label>
+                  <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                    <input
+                      type="radio"
+                      name="expiration"
+                      value="custom"
+                      checked={expirationOption === 'custom'}
+                      onChange={(e) => setExpirationOption(e.target.value as ExpirationOption)}
+                      className="w-4 h-4 text-primary"
+                    />
+                    <span className="text-sm text-foreground">Custom date</span>
+                  </label>
+                </div>
+                {expirationOption === 'custom' && (
+                  <div className="mt-3">
+                    <input
+                      type="date"
+                      value={customDate}
+                      onChange={(e) => setCustomDate(e.target.value)}
+                      min={new Date().toISOString().split('T')[0]}
+                      className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                )}
+              </div>
+
               <button
                 onClick={generateShareLink}
-                disabled={isLoading}
-                className="btn btn-primary"
+                disabled={isLoading || (expirationOption === 'custom' && !customDate)}
+                className="w-full btn btn-primary"
               >
                 {isLoading ? 'Generating...' : 'Generate Share Link'}
               </button>
@@ -257,7 +408,18 @@ export default function ShareLinksManager({ clientLabel, compact = false }: Shar
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Expires</p>
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-xs text-muted-foreground">Expires</p>
+                    {!isEditing && (
+                      <button
+                        onClick={() => setIsEditing(true)}
+                        className="text-xs text-primary hover:text-primary/80 flex items-center gap-1"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                        Edit
+                      </button>
+                    )}
+                  </div>
                   <p className="text-sm text-foreground">
                     {shareLink.expiresAt
                       ? new Date(shareLink.expiresAt).toLocaleDateString('en-US', {
@@ -269,6 +431,94 @@ export default function ShareLinksManager({ clientLabel, compact = false }: Shar
                   </p>
                 </div>
               </div>
+
+              {/* Edit expiration section */}
+              {isEditing && (
+                <div className="pt-4 border-t border-border space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-3">
+                      Update Expiration
+                    </label>
+                    <div className="space-y-2">
+                      <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                        <input
+                          type="radio"
+                          name="edit-expiration"
+                          value="never"
+                          checked={expirationOption === 'never'}
+                          onChange={(e) => setExpirationOption(e.target.value as ExpirationOption)}
+                          className="w-4 h-4 text-primary"
+                        />
+                        <span className="text-sm text-foreground">Never expire</span>
+                      </label>
+                      <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                        <input
+                          type="radio"
+                          name="edit-expiration"
+                          value="1day"
+                          checked={expirationOption === '1day'}
+                          onChange={(e) => setExpirationOption(e.target.value as ExpirationOption)}
+                          className="w-4 h-4 text-primary"
+                        />
+                        <span className="text-sm text-foreground">1 day from now</span>
+                      </label>
+                      <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                        <input
+                          type="radio"
+                          name="edit-expiration"
+                          value="1week"
+                          checked={expirationOption === '1week'}
+                          onChange={(e) => setExpirationOption(e.target.value as ExpirationOption)}
+                          className="w-4 h-4 text-primary"
+                        />
+                        <span className="text-sm text-foreground">1 week from now</span>
+                      </label>
+                      <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                        <input
+                          type="radio"
+                          name="edit-expiration"
+                          value="custom"
+                          checked={expirationOption === 'custom'}
+                          onChange={(e) => setExpirationOption(e.target.value as ExpirationOption)}
+                          className="w-4 h-4 text-primary"
+                        />
+                        <span className="text-sm text-foreground">Custom date</span>
+                      </label>
+                    </div>
+                    {expirationOption === 'custom' && (
+                      <div className="mt-3">
+                        <input
+                          type="date"
+                          value={customDate}
+                          onChange={(e) => setCustomDate(e.target.value)}
+                          min={new Date().toISOString().split('T')[0]}
+                          className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={updateShareLink}
+                      disabled={isLoading || (expirationOption === 'custom' && !customDate)}
+                      className="flex-1 btn btn-primary"
+                    >
+                      {isLoading ? 'Updating...' : 'Update Expiration'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsEditing(false);
+                        setExpirationOption('never');
+                        setCustomDate('');
+                      }}
+                      disabled={isLoading}
+                      className="flex-1 btn btn-secondary"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Actions */}
               <div className="flex gap-2 pt-4 border-t border-border">
