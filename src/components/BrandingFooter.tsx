@@ -23,11 +23,11 @@ export default function BrandingFooter() {
           />
         </Link>
         <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
-          <Link href="/terms" className="hover:text-foreground transition-colors">
+          <Link href="/terms" className="hover:opacity-70 transition-opacity">
             Terms of Service
           </Link>
           <span>•</span>
-          <Link href="/privacy" className="hover:text-foreground transition-colors">
+          <Link href="/privacy" className="hover:opacity-70 transition-opacity">
             Privacy Policy
           </Link>
         </div>
