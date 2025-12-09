@@ -94,7 +94,7 @@ export default function ClientsPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-border bg-card">
+      <header className="sticky top-0 z-50 border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="hidden sm:flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
