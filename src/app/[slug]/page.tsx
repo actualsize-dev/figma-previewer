@@ -29,23 +29,34 @@ async function getProject(slug: string): Promise<Project | null> {
   }
 }
 
-export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ProjectPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ share?: string }>;
+}) {
   const { slug } = await params;
+  const { share } = await searchParams;
   const project = await getProject(slug);
-  
+
   if (!project) {
     notFound();
   }
+
+  // Determine back link based on share token
+  const backLink = share ? `/share/${share}` : '/projects';
+  const backText = share ? '← Back to Projects' : '← All Projects';
 
   return (
     <div className="w-screen h-screen overflow-hidden relative">
       {/* Navigation button */}
       <div className="absolute top-4 left-4 z-20">
         <Link
-          href="/projects"
+          href={backLink}
           className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-700 rounded-md text-sm hover:bg-white transition-colors shadow-sm border"
         >
-          ← All Projects
+          {backText}
         </Link>
       </div>
       

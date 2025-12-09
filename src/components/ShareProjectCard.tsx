@@ -14,12 +14,15 @@ type Project = {
 
 interface ShareProjectCardProps {
   project: Project;
+  shareToken?: string;
 }
 
-export default function ShareProjectCard({ project }: ShareProjectCardProps) {
+export default function ShareProjectCard({ project, shareToken }: ShareProjectCardProps) {
+  const href = shareToken ? `/${project.slug}?share=${shareToken}` : `/${project.slug}`;
+
   return (
     <Link
-      href={`/${project.slug}`}
+      href={href}
       className="group block bg-card border border-border rounded-lg overflow-hidden hover:border-foreground/20 transition-all hover:shadow-md"
     >
       {/* Thumbnail */}

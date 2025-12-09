@@ -132,6 +132,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
                     ...project,
                     createdAt: project.createdAt.toISOString(),
                   }}
+                  shareToken={token}
                 />
               ))}
             </div>
