@@ -106,7 +106,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
               projectId={currentProject.id}
               projectName={currentProject.name}
               onDelete={onProjectDeleted}
-              className="flex-1 sm:flex-none min-w-0"
+              className="text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
               compact={true}
             />
           </div>
