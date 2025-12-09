@@ -184,7 +184,7 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
                           onClick={() => handlePermanentDelete(client.label, client.projectCount)}
                           className="btn btn-destructive text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
                         >
-                          Del
+                          Delete
                         </button>
                       </div>
                     </div>
@@ -227,19 +227,19 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
                           onClick={() => handleRestoreAll(client.label)}
                           className="btn btn-primary w-full text-sm"
                         >
-                          Restore All Projects
+                          Restore All
                         </button>
                         <button
                           onClick={() => setSelectiveRestoreClient(client.label)}
                           className="btn btn-outline w-full text-sm"
                         >
-                          Restore Selected Projects
+                          Select
                         </button>
                         <button
                           onClick={() => handlePermanentDelete(client.label, client.projectCount)}
                           className="btn btn-destructive w-full text-sm"
                         >
-                          Permanently Delete Client
+                          Delete
                         </button>
                       </div>
                     </div>

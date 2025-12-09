@@ -200,7 +200,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       onClick={() => handlePermanentDelete(project.id, project.name)}
                       className="btn btn-destructive text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
                     >
-                      Del
+                      Delete
                     </button>
                   </div>
                 </div>
@@ -262,7 +262,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       onClick={() => handleRestore(project.id, project.name)}
                       className="btn btn-primary w-full text-sm"
                     >
-                      Restore Project
+                      Restore
                     </button>
                     <a
                       href={project.figmaUrl}
@@ -270,13 +270,13 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       rel="noopener noreferrer"
                       className="btn btn-outline w-full text-sm"
                     >
-                      View in Figma
+                      Figma
                     </a>
                     <button
                       onClick={() => handlePermanentDelete(project.id, project.name)}
                       className="btn btn-destructive w-full text-sm"
                     >
-                      Permanently Delete
+                      Delete
                     </button>
                   </div>
                 </div>

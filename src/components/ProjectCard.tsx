@@ -102,6 +102,14 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
               View
             </Link>
             <CopyLinkButton slug={currentProject.slug} className="text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0" compact={true} />
+            <a
+              href={currentProject.figmaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
+            >
+              Figma
+            </a>
             <DeleteProjectButton
               projectId={currentProject.id}
               projectName={currentProject.name}
@@ -158,21 +166,22 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
             href={`/${currentProject.slug}`}
             className="btn btn-primary w-full text-sm"
           >
-            View Prototype
+            View
           </Link>
-          <CopyLinkButton slug={currentProject.slug} />
+          <CopyLinkButton slug={currentProject.slug} compact={true} />
           <a
             href={currentProject.figmaUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-outline w-full text-sm"
           >
-            Open in Figma
+            Figma
           </a>
           <DeleteProjectButton
             projectId={currentProject.id}
             projectName={currentProject.name}
             onDelete={onProjectDeleted}
+            compact={true}
           />
         </div>
       </div>
