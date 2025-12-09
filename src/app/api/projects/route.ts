@@ -22,38 +22,49 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, slug, figmaUrl, clientLabel } = body;
-    
+    const { name, figmaUrl, clientLabel } = body;
+
     // Validate required fields
-    if (!name || !slug || !figmaUrl) {
+    if (!name || !figmaUrl) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
-    
-    // Check if slug already exists
-    const existingProject = await prisma.project.findUnique({
-      where: { slug }
-    });
-    
-    if (existingProject) {
-      return NextResponse.json(
-        { error: 'Project with this name already exists' },
-        { status: 409 }
-      );
+
+    // Generate slug from name
+    let slug = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    // Check if slug already exists and append number if needed
+    let finalSlug = slug;
+    let counter = 1;
+
+    while (true) {
+      const existingProject = await prisma.project.findUnique({
+        where: { slug: finalSlug }
+      });
+
+      if (!existingProject) {
+        break;
+      }
+
+      finalSlug = `${slug}-${counter}`;
+      counter++;
     }
-    
+
     // Create new project
     const newProject = await prisma.project.create({
       data: {
         name,
-        slug,
+        slug: finalSlug,
         figmaUrl,
-        clientLabel: clientLabel || ''
+        clientLabel: clientLabel || 'Uncategorized'
       }
     });
-    
+
     return NextResponse.json(newProject, { status: 201 });
   } catch (error) {
     console.error('Error creating project:', error);
