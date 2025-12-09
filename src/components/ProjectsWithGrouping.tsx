@@ -264,6 +264,18 @@ export default function ProjectsWithGrouping({ projects, initialSelectedClient }
 
   return (
     <div className="space-y-6">
+      {selectedClient !== 'all' && selectedClient !== 'Uncategorized' && (
+        <div className="flex items-center justify-between pb-4 border-b border-border">
+          <div className="flex items-center space-x-3">
+            <h2 className="text-lg font-semibold text-foreground">{selectedClient}</h2>
+            <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md">
+              {displayedProjects.length} project{displayedProjects.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <ShareLinksManager clientLabel={selectedClient} />
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center space-x-2">
@@ -279,7 +291,7 @@ export default function ProjectsWithGrouping({ projects, initialSelectedClient }
               ))}
             </select>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <label className="text-sm font-medium text-foreground">Sort by:</label>
             <select
