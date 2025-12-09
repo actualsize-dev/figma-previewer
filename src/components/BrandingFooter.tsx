@@ -8,9 +8,9 @@ export default function BrandingFooter() {
         <p className="text-muted-foreground mb-3 uppercase tracking-wider" style={{ fontSize: '10px' }}>
           Powered by
         </p>
-        <Link 
-          href="https://www.actualsize.com/" 
-          target="_blank" 
+        <Link
+          href="https://www.actualsize.com/"
+          target="_blank"
           rel="noopener noreferrer"
           className="hover:opacity-80 transition-opacity"
         >
@@ -22,6 +22,15 @@ export default function BrandingFooter() {
             className="h-16 w-auto"
           />
         </Link>
+        <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <Link href="/terms" className="hover:text-foreground transition-colors">
+            Terms of Service
+          </Link>
+          <span>•</span>
+          <Link href="/privacy" className="hover:text-foreground transition-colors">
+            Privacy Policy
+          </Link>
+        </div>
       </div>
     </footer>
   );
