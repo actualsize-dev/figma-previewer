@@ -7,13 +7,15 @@ interface DeleteProjectButtonProps {
   projectName: string;
   onDelete: (id: string) => void;
   className?: string;
+  compact?: boolean;
 }
 
 export default function DeleteProjectButton({
   projectId,
   projectName,
   onDelete,
-  className = ''
+  className = '',
+  compact = false
 }: DeleteProjectButtonProps) {
   const [clickCount, setClickCount] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -45,10 +47,10 @@ export default function DeleteProjectButton({
     }
   };
 
-  const getButtonText = () => {
+  const getButtonText = (compact = false) => {
     if (isDeleting) return 'Deleting...';
-    if (clickCount === 1) return 'Confirm Delete';
-    return 'Delete Project';
+    if (clickCount === 1) return compact ? 'Confirm' : 'Confirm Delete';
+    return compact ? 'Delete' : 'Delete Project';
   };
 
   const getButtonClass = () => {
@@ -64,7 +66,7 @@ export default function DeleteProjectButton({
       disabled={isDeleting}
       className={getButtonClass()}
     >
-      {getButtonText()}
+      {getButtonText(compact)}
     </button>
   );
 }

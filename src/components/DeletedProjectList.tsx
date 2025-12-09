@@ -5,12 +5,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import FigmaThumbnail from './FigmaThumbnail';
 import { Grid3x3, List } from 'lucide-react';
+import { getCategoryColor } from '@/utils/categoryColors';
 
 type DeletedProject = {
   id: string;
   name: string;
   slug: string;
   figmaUrl: string;
+  clientLabel: string;
   createdAt: string;
   deletedAt: string;
 };
@@ -155,6 +157,20 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1 flex-wrap">
                       <h3 className="text-sm font-semibold text-foreground truncate">{project.name}</h3>
+                      {(() => {
+                        const colors = getCategoryColor(project.clientLabel || 'Uncategorized');
+                        return (
+                          <span
+                            className="text-xs px-2 py-1 rounded whitespace-nowrap"
+                            style={{
+                              backgroundColor: colors.bg,
+                              color: colors.text,
+                            }}
+                          >
+                            {project.clientLabel || 'Uncategorized'}
+                          </span>
+                        );
+                      })()}
                       <div className="text-xs px-2 py-0.5 bg-muted text-muted-foreground rounded whitespace-nowrap">
                         Deleted
                       </div>
@@ -184,7 +200,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       onClick={() => handlePermanentDelete(project.id, project.name)}
                       className="btn btn-destructive text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
                     >
-                      Delete
+                      Del
                     </button>
                   </div>
                 </div>
@@ -199,8 +215,24 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                         {project.name}
                       </h3>
                     </div>
-                    <div className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
-                      Deleted
+                    <div className="flex items-center gap-2">
+                      {(() => {
+                        const colors = getCategoryColor(project.clientLabel || 'Uncategorized');
+                        return (
+                          <span
+                            className="text-xs px-2 py-1 rounded whitespace-nowrap"
+                            style={{
+                              backgroundColor: colors.bg,
+                              color: colors.text,
+                            }}
+                          >
+                            {project.clientLabel || 'Uncategorized'}
+                          </span>
+                        );
+                      })()}
+                      <div className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
+                        Deleted
+                      </div>
                     </div>
                   </div>
 

@@ -5,9 +5,10 @@ import { useState } from 'react';
 interface CopyLinkButtonProps {
   slug: string;
   className?: string;
+  compact?: boolean;
 }
 
-export default function CopyLinkButton({ slug, className = '' }: CopyLinkButtonProps) {
+export default function CopyLinkButton({ slug, className = '', compact = false }: CopyLinkButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -26,7 +27,7 @@ export default function CopyLinkButton({ slug, className = '' }: CopyLinkButtonP
       onClick={handleCopy}
       className={`btn btn-outline ${className || 'w-full text-sm'}`}
     >
-      {copied ? '✓ Copied!' : 'Copy Share Link'}
+      {copied ? (compact ? '✓' : '✓ Copied!') : (compact ? 'Copy' : 'Copy Share Link')}
     </button>
   );
 }

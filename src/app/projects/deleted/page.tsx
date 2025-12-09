@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import DeletedProjectList from '@/components/DeletedProjectList';
+import DeletedClientList from '@/components/DeletedClientList';
 import BrandingFooter from '@/components/BrandingFooter';
 import { prisma } from '@/lib/db';
 
@@ -13,6 +14,12 @@ type DeletedProject = {
   deletedAt: Date | null;
 };
 
+type DeletedClient = {
+  label: string;
+  projectCount: number;
+  deletedAt: Date;
+};
+
 async function getDeletedProjects(): Promise<DeletedProject[]> {
   try {
     const deletedProjects = await prisma.project.findMany({
@@ -23,7 +30,7 @@ async function getDeletedProjects(): Promise<DeletedProject[]> {
         deletedAt: 'desc'
       }
     });
-    
+
     return deletedProjects;
   } catch (error) {
     console.error('Error reading deleted projects:', error);
@@ -31,8 +38,71 @@ async function getDeletedProjects(): Promise<DeletedProject[]> {
   }
 }
 
+async function getDeletedClients(): Promise<DeletedClient[]> {
+  try {
+    // Get all unique client labels from projects
+    const allClients = await prisma.project.groupBy({
+      by: ['clientLabel'],
+      _count: {
+        id: true
+      }
+    });
+
+    // Filter to clients where ALL projects are deleted
+    const deletedClients: DeletedClient[] = [];
+
+    for (const client of allClients) {
+      const totalProjects = client._count.id;
+      const deletedProjects = await prisma.project.count({
+        where: {
+          clientLabel: client.clientLabel,
+          deletedAt: { not: null }
+        }
+      });
+
+      // If all projects are deleted, this is a deleted client
+      if (deletedProjects === totalProjects && totalProjects > 0) {
+        const mostRecentDeletion = await prisma.project.findFirst({
+          where: {
+            clientLabel: client.clientLabel,
+            deletedAt: { not: null }
+          },
+          orderBy: {
+            deletedAt: 'desc'
+          },
+          select: {
+            deletedAt: true
+          }
+        });
+
+        if (mostRecentDeletion?.deletedAt) {
+          deletedClients.push({
+            label: client.clientLabel,
+            projectCount: totalProjects,
+            deletedAt: mostRecentDeletion.deletedAt
+          });
+        }
+      }
+    }
+
+    // Sort by most recently deleted
+    return deletedClients.sort((a, b) => b.deletedAt.getTime() - a.deletedAt.getTime());
+  } catch (error) {
+    console.error('Error reading deleted clients:', error);
+    return [];
+  }
+}
+
 export default async function DeletedProjectsPage() {
   const deletedProjects = await getDeletedProjects();
+  const deletedClients = await getDeletedClients();
+
+  // Filter out projects that belong to deleted clients
+  const standaloneDeletedProjects = deletedProjects.filter(project => {
+    return !deletedClients.some(client => client.label === project.clientLabel);
+  });
+
+  const hasAnyDeleted = deletedClients.length > 0 || standaloneDeletedProjects.length > 0;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -116,7 +186,7 @@ export default async function DeletedProjectsPage() {
       {/* Main content */}
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {deletedProjects.length === 0 ? (
+          {!hasAnyDeleted ? (
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,10 +194,10 @@ export default async function DeletedProjectsPage() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">
-                No deleted projects
+                No deleted items
               </h3>
               <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-                Projects you delete will appear here for restoration. You can always restore them later or permanently delete them.
+                Projects and clients you delete will appear here for restoration. You can always restore them later or permanently delete them.
               </p>
               <Link
                 href="/projects"
@@ -137,24 +207,49 @@ export default async function DeletedProjectsPage() {
               </Link>
             </div>
           ) : (
-            <div className="space-y-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-2xl font-semibold text-foreground">Deleted Projects</h1>
-                  <p className="text-muted-foreground mt-1">
-                    Restore or permanently delete projects
-                  </p>
+            <div className="space-y-12">
+              {deletedClients.length > 0 && (
+                <div className="space-y-8">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h1 className="text-2xl font-semibold text-foreground">Deleted Clients</h1>
+                      <p className="text-muted-foreground mt-1">
+                        Restore or permanently delete clients and their projects
+                      </p>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {deletedClients.length} deleted client{deletedClients.length !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+
+                  <DeletedClientList initialDeletedClients={deletedClients.map(client => ({
+                    ...client,
+                    deletedAt: client.deletedAt.toISOString()
+                  }))} />
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  {deletedProjects.length} deleted project{deletedProjects.length !== 1 ? 's' : ''}
+              )}
+
+              {standaloneDeletedProjects.length > 0 && (
+                <div className="space-y-8">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h1 className="text-2xl font-semibold text-foreground">Deleted Projects</h1>
+                      <p className="text-muted-foreground mt-1">
+                        Restore or permanently delete individual projects
+                      </p>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {standaloneDeletedProjects.length} deleted project{standaloneDeletedProjects.length !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+
+                  <DeletedProjectList initialDeletedProjects={standaloneDeletedProjects.map(project => ({
+                    ...project,
+                    createdAt: project.createdAt.toISOString(),
+                    deletedAt: project.deletedAt?.toISOString() || ''
+                  }))} />
                 </div>
-              </div>
-              
-              <DeletedProjectList initialDeletedProjects={deletedProjects.map(project => ({
-                ...project,
-                createdAt: project.createdAt.toISOString(),
-                deletedAt: project.deletedAt?.toISOString() || ''
-              }))} />
+              )}
             </div>
           )}
         </div>
