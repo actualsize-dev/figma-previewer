@@ -99,23 +99,23 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
               href={`/${currentProject.slug}`}
               className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
             >
-              View
+              View Prototype
             </Link>
-            <CopyLinkButton slug={currentProject.slug} className="text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0" compact={true} />
+            <CopyLinkButton slug={currentProject.slug} className="text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0" compact={false} />
             <a
               href={currentProject.figmaUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-outline text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
             >
-              Figma
+              Open in Figma
             </a>
             <DeleteProjectButton
               projectId={currentProject.id}
               projectName={currentProject.name}
               onDelete={onProjectDeleted}
               className="text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
-              compact={true}
+              compact={false}
             />
           </div>
         </div>
@@ -166,22 +166,21 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
             href={`/${currentProject.slug}`}
             className="btn btn-primary w-full text-sm"
           >
-            View
+            View Prototype
           </Link>
-          <CopyLinkButton slug={currentProject.slug} compact={true} />
+          <CopyLinkButton slug={currentProject.slug} />
           <a
             href={currentProject.figmaUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-outline w-full text-sm"
           >
-            Figma
+            Open in Figma
           </a>
           <DeleteProjectButton
             projectId={currentProject.id}
             projectName={currentProject.name}
             onDelete={onProjectDeleted}
-            compact={true}
           />
         </div>
       </div>

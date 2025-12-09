@@ -186,7 +186,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       onClick={() => handleRestore(project.id, project.name)}
                       className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
                     >
-                      Restore
+                      Restore Project
                     </button>
                     <a
                       href={project.figmaUrl}
@@ -194,13 +194,13 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       rel="noopener noreferrer"
                       className="btn btn-outline text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
                     >
-                      Figma
+                      View in Figma
                     </a>
                     <button
                       onClick={() => handlePermanentDelete(project.id, project.name)}
                       className="btn btn-destructive text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
                     >
-                      Delete
+                      Permanently Delete
                     </button>
                   </div>
                 </div>
@@ -262,7 +262,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       onClick={() => handleRestore(project.id, project.name)}
                       className="btn btn-primary w-full text-sm"
                     >
-                      Restore
+                      Restore Project
                     </button>
                     <a
                       href={project.figmaUrl}
@@ -270,13 +270,13 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
                       rel="noopener noreferrer"
                       className="btn btn-outline w-full text-sm"
                     >
-                      Figma
+                      View in Figma
                     </a>
                     <button
                       onClick={() => handlePermanentDelete(project.id, project.name)}
                       className="btn btn-destructive w-full text-sm"
                     >
-                      Delete
+                      Permanently Delete
                     </button>
                   </div>
                 </div>

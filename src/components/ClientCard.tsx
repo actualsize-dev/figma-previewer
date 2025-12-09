@@ -105,13 +105,13 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
               onClick={() => setIsAddProjectModalOpen(true)}
               className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
             >
-              Add
+              Add Project
             </button>
             <Link
               href={`/projects?client=${encodeURIComponent(currentLabel)}`}
               className="btn btn-outline text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
             >
-              View
+              View Projects
             </Link>
             <ShareLinksManager clientLabel={currentLabel} compact />
             <button
@@ -125,7 +125,7 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
                   : 'btn-destructive'
               }`}
             >
-              {isDeleting ? 'Deleting...' : clickCount === 1 ? 'Confirm' : 'Delete'}
+              {isDeleting ? 'Deleting Client...' : clickCount === 1 ? 'Confirm Delete Client' : 'Delete Client'}
             </button>
           </div>
         </div>
@@ -173,7 +173,7 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
           className="btn btn-primary w-full text-sm flex items-center justify-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          Add
+          Add Project
         </button>
 
         <Link
@@ -181,7 +181,7 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
           className="btn btn-outline w-full text-sm flex items-center justify-center gap-2"
         >
           <ExternalLink className="w-4 h-4" />
-          View
+          View Projects
         </Link>
 
         <button
@@ -195,7 +195,7 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
               : 'btn-destructive'
           }`}
         >
-          {isDeleting ? 'Deleting...' : clickCount === 1 ? 'Confirm' : 'Delete'}
+          {isDeleting ? 'Deleting Client...' : clickCount === 1 ? 'Confirm Delete Client' : 'Delete Client'}
         </button>
 
         <div className="pt-2 border-t border-border">

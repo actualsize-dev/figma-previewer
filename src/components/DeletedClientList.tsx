@@ -172,19 +172,19 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
                           onClick={() => handleRestoreAll(client.label)}
                           className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
                         >
-                          Restore All
+                          Restore All Projects
                         </button>
                         <button
                           onClick={() => setSelectiveRestoreClient(client.label)}
                           className="btn btn-outline text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
                         >
-                          Select
+                          Restore Selected Projects
                         </button>
                         <button
                           onClick={() => handlePermanentDelete(client.label, client.projectCount)}
                           className="btn btn-destructive text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
                         >
-                          Delete
+                          Permanently Delete Client
                         </button>
                       </div>
                     </div>
@@ -227,19 +227,19 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
                           onClick={() => handleRestoreAll(client.label)}
                           className="btn btn-primary w-full text-sm"
                         >
-                          Restore All
+                          Restore All Projects
                         </button>
                         <button
                           onClick={() => setSelectiveRestoreClient(client.label)}
                           className="btn btn-outline w-full text-sm"
                         >
-                          Select
+                          Restore Selected Projects
                         </button>
                         <button
                           onClick={() => handlePermanentDelete(client.label, client.projectCount)}
                           className="btn btn-destructive w-full text-sm"
                         >
-                          Delete
+                          Permanently Delete Client
                         </button>
                       </div>
                     </div>
