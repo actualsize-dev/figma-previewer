@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Grid3x3, List, Folder } from 'lucide-react';
 import { getCategoryColor } from '@/utils/categoryColors';
+import { useToast } from '@/contexts/ToastContext';
 import SelectiveRestoreModal from './SelectiveRestoreModal';
 
 type DeletedClient = {
@@ -21,6 +22,7 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectiveRestoreClient, setSelectiveRestoreClient] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const filteredClients = deletedClients.filter(client =>
     !searchTerm.trim() ||
@@ -44,7 +46,13 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
       }
 
       handleClientRemoved(clientLabel);
-      alert(`All projects for "${clientLabel}" have been restored!`);
+
+      showToast({
+        message: `All projects for "${clientLabel}" have been restored.`,
+        linkText: 'View in projects',
+        linkHref: '/projects',
+        duration: 6000
+      });
     } catch (error) {
       console.error('Error restoring client:', error);
       alert('Failed to restore client. Please try again.');

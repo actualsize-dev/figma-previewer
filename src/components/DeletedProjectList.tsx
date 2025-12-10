@@ -6,6 +6,7 @@ import Link from 'next/link';
 import FigmaThumbnail from './FigmaThumbnail';
 import { Grid3x3, List } from 'lucide-react';
 import { getCategoryColor } from '@/utils/categoryColors';
+import { useToast } from '@/contexts/ToastContext';
 
 type DeletedProject = {
   id: string;
@@ -25,6 +26,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
   const [deletedProjects, setDeletedProjects] = useState(initialDeletedProjects);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
+  const { showToast } = useToast();
 
   const filteredProjects = deletedProjects.filter(project =>
     !searchTerm.trim() ||
@@ -50,9 +52,13 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
 
       const result = await response.json();
       handleProjectRemoved(projectId);
-      
-      // Show success message with link to restored project
-      alert(`"${projectName}" has been restored! You can find it in your projects list.`);
+
+      showToast({
+        message: `"${projectName}" has been restored.`,
+        linkText: 'View in projects',
+        linkHref: '/projects',
+        duration: 6000
+      });
     } catch (error) {
       console.error('Error restoring project:', error);
       alert('Failed to restore project. Please try again.');
