@@ -168,16 +168,16 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
               </button>
             )}
           </div>
-          <div className="flex sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto">
             <button
               onClick={() => setIsAddProjectModalOpen(true)}
-              className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
+              className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap text-center w-full sm:w-auto"
             >
               Add Project
             </button>
             <Link
               href={`/projects?client=${encodeURIComponent(currentLabel)}`}
-              className="btn btn-outline text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
+              className="btn btn-outline text-xs px-2 sm:px-3 py-1 whitespace-nowrap text-center w-full sm:w-auto"
             >
               View Projects
             </Link>
@@ -185,7 +185,7 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
             <button
               onClick={handleDelete}
               disabled={isDeleting}
-              className={`btn text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0 ${
+              className={`btn text-xs px-2 sm:px-3 py-1 whitespace-nowrap text-center w-full sm:w-auto ${
                 isDeleting
                   ? 'opacity-60 cursor-not-allowed'
                   : clickCount === 1

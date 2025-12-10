@@ -10,9 +10,10 @@ interface ToastProps {
   linkHref?: string;
   onClose: () => void;
   duration?: number;
+  variant?: 'delete' | 'restore';
 }
 
-export default function Toast({ message, linkText, linkHref, onClose, duration = 5000 }: ToastProps) {
+export default function Toast({ message, linkText, linkHref, onClose, duration = 5000, variant = 'delete' }: ToastProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
@@ -21,10 +22,21 @@ export default function Toast({ message, linkText, linkHref, onClose, duration =
     return () => clearTimeout(timer);
   }, [onClose, duration]);
 
+  const colors = variant === 'restore'
+    ? { bg: '#0A2818', text: '#10B981', border: '#165438' }
+    : { bg: '#2D0A0A', text: '#EF4444', border: '#5A1414' };
+
   return (
     <div className="fixed top-16 left-0 right-0 z-40 animate-in slide-in-from-top duration-300">
-      <div className="px-6 py-4 shadow-lg flex items-center justify-center gap-4" style={{ backgroundColor: '#2D0A0A' }}>
-        <span className="text-sm font-medium" style={{ color: '#EF4444' }}>{message}</span>
+      <div
+        className="px-6 py-4 shadow-lg flex items-center justify-center gap-4"
+        style={{
+          backgroundColor: colors.bg,
+          borderTop: `1px solid ${colors.border}`,
+          borderBottom: `1px solid ${colors.border}`
+        }}
+      >
+        <span className="text-sm font-medium" style={{ color: colors.text }}>{message}</span>
         {linkText && linkHref && (
           <Link
             href={linkHref}

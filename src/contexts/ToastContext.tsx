@@ -8,6 +8,7 @@ interface ToastOptions {
   linkText?: string;
   linkHref?: string;
   duration?: number;
+  variant?: 'delete' | 'restore';
 }
 
 interface ToastContextType {
@@ -37,6 +38,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           linkHref={toast.linkHref}
           onClose={hideToast}
           duration={toast.duration}
+          variant={toast.variant}
         />
       )}
     </ToastContext.Provider>

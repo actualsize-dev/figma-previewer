@@ -51,7 +51,8 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
         message: `All projects for "${clientLabel}" have been restored.`,
         linkText: 'View in projects',
         linkHref: '/projects',
-        duration: 6000
+        duration: 6000,
+        variant: 'restore'
       });
     } catch (error) {
       console.error('Error restoring client:', error);
@@ -175,22 +176,22 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
                           <span className="whitespace-nowrap">Deleted {new Date(client.deletedAt).toLocaleDateString()}</span>
                         </div>
                       </div>
-                      <div className="flex sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto">
                         <button
                           onClick={() => handleRestoreAll(client.label)}
-                          className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
+                          className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap text-center w-full sm:w-auto"
                         >
                           Restore All Projects
                         </button>
                         <button
                           onClick={() => setSelectiveRestoreClient(client.label)}
-                          className="btn btn-outline text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
+                          className="btn btn-outline text-xs px-2 sm:px-3 py-1 whitespace-nowrap text-center w-full sm:w-auto"
                         >
                           Restore Selected Projects
                         </button>
                         <button
                           onClick={() => handlePermanentDelete(client.label, client.projectCount)}
-                          className="btn btn-destructive text-xs px-2 sm:px-3 py-1 whitespace-nowrap flex-1 sm:flex-none text-center min-w-0"
+                          className="btn btn-destructive text-xs px-2 sm:px-3 py-1 whitespace-nowrap text-center w-full sm:w-auto"
                         >
                           Permanently Delete Client
                         </button>
