@@ -31,6 +31,9 @@ export default function BrandingFooter() {
             Privacy Policy
           </Link>
         </div>
+        <div className="mt-3 text-xs" style={{ color: '#888' }}>
+          © Actual Size 2025. All rights reserved.
+        </div>
       </div>
     </footer>
   );
