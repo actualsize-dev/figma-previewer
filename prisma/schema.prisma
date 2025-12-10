@@ -21,6 +21,16 @@ model Project {
   @@map("projects")
 }
 
+model Client {
+  id          String    @id @default(cuid())
+  clientLabel String    @unique @map("client_label")
+  description String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("clients")
+}
+
 model ShareLink {
   id          String    @id @default(cuid())
   token       String    @unique

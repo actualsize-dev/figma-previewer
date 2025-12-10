@@ -15,6 +15,7 @@ type Project = {
 type Client = {
   label: string;
   projectCount: number;
+  description?: string | null;
 };
 
 export default function ClientsPage() {
@@ -22,13 +23,34 @@ export default function ClientsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [clientDescriptions, setClientDescriptions] = useState<Map<string, string | null>>(new Map());
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchData = async () => {
       try {
         const response = await fetch('/api/projects');
         const data = await response.json();
         setProjects(data.projects || []);
+
+        // Fetch descriptions for all clients
+        const clientLabels = (data.projects || [])
+          .map((p: Project) => p.clientLabel)
+          .filter((label: string) => !!label && label !== 'Uncategorized');
+        const uniqueClients: string[] = Array.from(new Set(clientLabels));
+
+        const descriptionsMap = new Map<string, string | null>();
+        await Promise.all(
+          uniqueClients.map(async (clientLabel: string) => {
+            try {
+              const descResponse = await fetch(`/api/clients/${encodeURIComponent(clientLabel)}/description`);
+              const descData = await descResponse.json();
+              descriptionsMap.set(clientLabel, descData.description);
+            } catch (error) {
+              console.error(`Error fetching description for ${clientLabel}:`, error);
+            }
+          })
+        );
+        setClientDescriptions(descriptionsMap);
       } catch (error) {
         console.error('Error fetching projects:', error);
       } finally {
@@ -36,7 +58,7 @@ export default function ClientsPage() {
       }
     };
 
-    fetchProjects();
+    fetchData();
   }, []);
 
   const clients = useMemo(() => {
@@ -50,9 +72,13 @@ export default function ClientsPage() {
     });
 
     return Array.from(clientMap.entries())
-      .map(([label, count]) => ({ label, projectCount: count }))
+      .map(([label, count]) => ({
+        label,
+        projectCount: count,
+        description: clientDescriptions.get(label) || null
+      }))
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [projects]);
+  }, [projects, clientDescriptions]);
 
   const filteredClients = useMemo(() => {
     if (!searchTerm.trim()) return clients;
@@ -89,6 +115,14 @@ export default function ClientsPage() {
       // Create a dummy project for this client (will be replaced by proper modal later)
       alert(`Client "${clientName}" will be created. Add a project for this client to make it appear in the list.`);
     }
+  };
+
+  const handleDescriptionUpdated = (clientLabel: string, description: string | null) => {
+    setClientDescriptions((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(clientLabel, description);
+      return newMap;
+    });
   };
 
   return (
@@ -287,6 +321,7 @@ export default function ClientsPage() {
                       client={client}
                       onClientUpdated={handleClientUpdated}
                       onProjectAdded={handleProjectAdded}
+                      onDescriptionUpdated={handleDescriptionUpdated}
                       compact={viewMode === 'list'}
                     />
                   ))}

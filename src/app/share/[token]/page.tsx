@@ -54,6 +54,19 @@ async function getProjectsByClient(clientLabel: string): Promise<Project[]> {
   }
 }
 
+async function getClientDescription(clientLabel: string): Promise<string | null> {
+  try {
+    const client = await prisma.client.findUnique({
+      where: { clientLabel },
+    });
+
+    return client?.description || null;
+  } catch (error) {
+    console.error('Error reading client description:', error);
+    return null;
+  }
+}
+
 export default async function SharePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const shareLink = await getShareLink(token);
@@ -84,6 +97,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
   }
 
   const projects = await getProjectsByClient(shareLink.clientLabel);
+  const clientDescription = await getClientDescription(shareLink.clientLabel);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -109,6 +123,14 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
       {/* Main content */}
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {clientDescription && (
+            <div className="mb-8 px-6 py-4 bg-card border border-border rounded-lg">
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                {clientDescription}
+              </p>
+            </div>
+          )}
+
           {projects.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">

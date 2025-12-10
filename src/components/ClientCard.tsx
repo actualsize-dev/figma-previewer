@@ -10,20 +10,23 @@ import { Folder, ExternalLink, Plus } from 'lucide-react';
 type Client = {
   label: string;
   projectCount: number;
+  description?: string | null;
 };
 
 interface ClientCardProps {
   client: Client;
   onClientUpdated?: (oldLabel: string, newLabel: string) => void;
   onProjectAdded?: () => void;
+  onDescriptionUpdated?: (clientLabel: string, description: string | null) => void;
   compact?: boolean;
 }
 
-export default function ClientCard({ client, onClientUpdated, onProjectAdded, compact = false }: ClientCardProps) {
+export default function ClientCard({ client, onClientUpdated, onProjectAdded, onDescriptionUpdated, compact = false }: ClientCardProps) {
   const [currentLabel, setCurrentLabel] = useState(client.label);
   const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleDelete = async () => {
     if (clickCount === 0) {
@@ -82,6 +85,32 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
     }
   };
 
+  const handleDescriptionUpdate = async (newDescription: string) => {
+    try {
+      const response = await fetch(`/api/clients/${encodeURIComponent(currentLabel)}/description`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          description: newDescription || null,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update description');
+      }
+
+      if (onDescriptionUpdated) {
+        onDescriptionUpdated(currentLabel, newDescription || null);
+      }
+    } catch (error) {
+      console.error('Error updating description:', error);
+      alert('Failed to update description. Please try again.');
+      throw error;
+    }
+  };
+
   if (compact) {
     return (
       <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20 overflow-hidden">
@@ -99,6 +128,33 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
                 {client.projectCount} {client.projectCount === 1 ? 'project' : 'projects'}
               </span>
             </div>
+            {client.description || isExpanded ? (
+              <div className="mt-2">
+                <InlineEdit
+                  value={client.description || ''}
+                  onSave={handleDescriptionUpdate}
+                  className={`text-xs text-muted-foreground ${!isExpanded ? 'line-clamp-2' : ''}`}
+                  inputClassName="text-xs"
+                  placeholder="Add description..."
+                  multiline
+                />
+                {client.description && client.description.length > 100 && (
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="text-xs text-primary hover:underline mt-1"
+                  >
+                    {isExpanded ? 'Show less' : 'Show more'}
+                  </button>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsExpanded(true)}
+                className="text-xs text-muted-foreground hover:text-foreground mt-1"
+              >
+                + Add description
+              </button>
+            )}
           </div>
           <div className="flex sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto min-w-0">
             <button
@@ -157,6 +213,16 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, co
               className="text-lg font-semibold text-foreground"
               inputClassName="text-lg font-semibold"
               placeholder="Client name..."
+            />
+          </div>
+          <div className="mt-2 ml-13">
+            <InlineEdit
+              value={client.description || ''}
+              onSave={handleDescriptionUpdate}
+              className="text-sm text-muted-foreground"
+              inputClassName="text-sm"
+              placeholder="Add description..."
+              multiline
             />
           </div>
         </div>
