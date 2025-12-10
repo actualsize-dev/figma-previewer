@@ -6,6 +6,7 @@ import InlineEdit from './InlineEdit';
 import ShareLinksManager from './ShareLinksManager';
 import AddProjectModal from './AddProjectModal';
 import { Folder, ExternalLink, Plus } from 'lucide-react';
+import { useToast } from '@/contexts/ToastContext';
 
 type Client = {
   label: string;
@@ -28,6 +29,7 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
   const [isDeleting, setIsDeleting] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
+  const { showToast } = useToast();
 
   const handleDelete = async () => {
     if (clickCount === 0) {
@@ -45,8 +47,17 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
           throw new Error('Failed to delete client');
         }
 
+        showToast({
+          message: `Client "${currentLabel}" and its ${client.projectCount} project${client.projectCount !== 1 ? 's have' : ' has'} been deleted.`,
+          linkText: 'View deleted projects',
+          linkHref: '/projects/deleted',
+          duration: 6000
+        });
+
         // Refresh the page to show updated client list
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       } catch (error) {
         console.error('Error deleting client:', error);
         alert('Failed to delete client. Please try again.');

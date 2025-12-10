@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/contexts/ToastContext';
 
 interface DeleteProjectButtonProps {
   projectId: string;
@@ -19,6 +20,7 @@ export default function DeleteProjectButton({
 }: DeleteProjectButtonProps) {
   const [clickCount, setClickCount] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { showToast } = useToast();
 
   const handleClick = async () => {
     if (clickCount === 0) {
@@ -36,6 +38,13 @@ export default function DeleteProjectButton({
         if (!response.ok) {
           throw new Error('Failed to delete project');
         }
+
+        showToast({
+          message: `"${projectName}" has been deleted.`,
+          linkText: 'View deleted projects',
+          linkHref: '/projects/deleted',
+          duration: 6000
+        });
 
         onDelete(projectId);
       } catch (error) {
