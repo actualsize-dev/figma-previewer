@@ -27,6 +27,7 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
   const [clickCount, setClickCount] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showDescriptionInput, setShowDescriptionInput] = useState(false);
 
   const handleDelete = async () => {
     if (clickCount === 0) {
@@ -215,15 +216,24 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
               placeholder="Client name..."
             />
           </div>
-          <div className="mt-2 ml-13">
-            <InlineEdit
-              value={client.description || ''}
-              onSave={handleDescriptionUpdate}
-              className="text-sm text-muted-foreground"
-              inputClassName="text-sm"
-              placeholder="Add description..."
-              multiline
-            />
+          <div className="mt-3 ml-13">
+            {client.description || showDescriptionInput ? (
+              <InlineEdit
+                value={client.description || ''}
+                onSave={handleDescriptionUpdate}
+                className="text-sm text-muted-foreground"
+                inputClassName="text-sm"
+                placeholder="Add description..."
+                multiline
+              />
+            ) : (
+              <button
+                onClick={() => setShowDescriptionInput(true)}
+                className="text-sm text-muted-foreground hover:text-foreground border border-dashed border-border rounded px-3 py-2 w-full text-left transition-colors hover:border-foreground/50"
+              >
+                + Click to add description
+              </button>
+            )}
           </div>
         </div>
       </div>
