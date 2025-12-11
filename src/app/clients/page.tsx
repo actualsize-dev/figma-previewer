@@ -5,6 +5,7 @@ import Link from 'next/link';
 import ClientCard from '@/components/ClientCard';
 import NewClientCard from '@/components/NewClientCard';
 import BrandingFooter from '@/components/BrandingFooter';
+import Header from '@/components/Header';
 import { Grid3x3, List } from 'lucide-react';
 
 type Project = {
@@ -127,73 +128,7 @@ export default function ClientsPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="hidden sm:flex justify-between items-center h-16">
-            <div className="flex items-center space-x-8">
-              <Link href="/" className="text-xl font-semibold text-foreground hover:text-muted-foreground transition-colors">
-                Figma Concierge
-              </Link>
-              <nav className="flex items-center space-x-2">
-                <Link
-                  href="/projects"
-                  className="text-sm text-muted-foreground nav-link"
-                >
-                  Projects
-                </Link>
-                <span className="text-sm font-medium text-foreground relative px-3 py-1.5">
-                  Clients
-                  <div className="absolute bottom-[-16px] left-0 right-0 h-0.5 bg-foreground"></div>
-                </span>
-                <Link
-                  href="/projects/deleted"
-                  className="text-sm text-muted-foreground nav-link"
-                >
-                  Deleted
-                </Link>
-              </nav>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/" className="btn btn-primary text-sm">
-                New Project
-              </Link>
-            </div>
-          </div>
-
-          {/* Mobile layout */}
-          <div className="sm:hidden">
-            <div className="flex justify-between items-center h-16">
-              <Link href="/" className="text-xl font-semibold text-foreground hover:text-muted-foreground transition-colors">
-                Figma Concierge
-              </Link>
-              <Link href="/" className="btn btn-primary text-sm">
-                New Project
-              </Link>
-            </div>
-            <div className="pb-4">
-              <nav className="flex items-center space-x-2">
-                <Link
-                  href="/projects"
-                  className="text-sm text-muted-foreground nav-link"
-                >
-                  Projects
-                </Link>
-                <span className="text-sm font-medium text-foreground relative px-3 py-1.5">
-                  Clients
-                  <div className="absolute bottom-[-20px] left-0 right-0 h-0.5 bg-foreground"></div>
-                </span>
-                <Link
-                  href="/projects/deleted"
-                  className="text-sm text-muted-foreground nav-link"
-                >
-                  Deleted
-                </Link>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header activeTab="clients" />
 
       {/* Main content */}
       <main className="flex-1">

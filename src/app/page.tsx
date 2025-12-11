@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ClientCategoryInput from '@/components/ClientCategoryInput';
 import BrandingFooter from '@/components/BrandingFooter';
+import Header from '@/components/Header';
 
 export default function HomePage() {
   const [projectName, setProjectName] = useState('');
@@ -70,26 +71,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Vercel-style header with navigation */}
-      <header className="border-b border-border bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-8">
-              <h1 className="text-xl font-semibold text-foreground">
-                Figma Concierge
-              </h1>
-            </div>
-            <nav className="flex items-center space-x-6">
-              <a 
-                href="/projects" 
-                className="btn btn-subtle text-sm"
-              >
-                Projects
-              </a>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main content area */}
       <main className="flex-1 flex items-center justify-center px-4 py-12">
