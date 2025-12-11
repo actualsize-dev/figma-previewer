@@ -13,13 +13,16 @@ interface ToastProps {
   variant?: 'delete' | 'restore';
 }
 
-export default function Toast({ message, linkText, linkHref, onClose, duration = 5000, variant = 'delete' }: ToastProps) {
+export default function Toast({ message, linkText, linkHref, onClose, duration, variant = 'delete' }: ToastProps) {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, duration);
+    // Only auto-dismiss if duration is specified
+    if (duration) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, duration);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, [onClose, duration]);
 
   const colors = variant === 'restore'
@@ -29,29 +32,31 @@ export default function Toast({ message, linkText, linkHref, onClose, duration =
   return (
     <div className="fixed top-16 left-0 right-0 z-40 animate-in slide-in-from-top duration-300">
       <div
-        className="px-6 py-4 shadow-lg flex items-center justify-center gap-4"
+        className="px-4 sm:px-6 py-3 sm:py-4 shadow-lg"
         style={{
           backgroundColor: colors.bg,
           borderTop: `1px solid ${colors.border}`,
           borderBottom: `1px solid ${colors.border}`
         }}
       >
-        <span className="text-sm font-medium" style={{ color: colors.text }}>{message}</span>
-        {linkText && linkHref && (
-          <Link
-            href={linkHref}
-            className="text-white underline hover:opacity-80 transition-opacity text-sm font-medium whitespace-nowrap"
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-2 sm:gap-4">
+          <span className="text-sm font-medium text-center sm:text-left" style={{ color: colors.text }}>{message}</span>
+          {linkText && linkHref && (
+            <Link
+              href={linkHref}
+              className="text-white underline hover:opacity-80 transition-opacity text-sm font-medium whitespace-nowrap"
+            >
+              {linkText}
+            </Link>
+          )}
+          <button
+            onClick={onClose}
+            className="text-white hover:opacity-80 transition-opacity flex-shrink-0"
+            aria-label="Close notification"
           >
-            {linkText}
-          </Link>
-        )}
-        <button
-          onClick={onClose}
-          className="text-white hover:opacity-80 transition-opacity ml-2"
-          aria-label="Close notification"
-        >
-          <X className="w-5 h-5" />
-        </button>
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );

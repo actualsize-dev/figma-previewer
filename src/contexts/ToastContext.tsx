@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Toast from '@/components/Toast';
 
 interface ToastOptions {
@@ -19,6 +20,7 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toast, setToast] = useState<ToastOptions | null>(null);
+  const pathname = usePathname();
 
   const showToast = useCallback((options: ToastOptions) => {
     setToast(options);
@@ -27,6 +29,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const hideToast = useCallback(() => {
     setToast(null);
   }, []);
+
+  // Hide toast when navigating to a new page
+  useEffect(() => {
+    hideToast();
+  }, [pathname, hideToast]);
 
   return (
     <ToastContext.Provider value={{ showToast }}>

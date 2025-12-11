@@ -42,8 +42,7 @@ export default function DeleteProjectButton({
         showToast({
           message: `"${projectName}" has been deleted.`,
           linkText: 'View deleted projects',
-          linkHref: '/projects/deleted',
-          duration: 6000
+          linkHref: '/projects/deleted'
         });
 
         onDelete(projectId);
