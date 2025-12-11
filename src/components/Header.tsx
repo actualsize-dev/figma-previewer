@@ -26,8 +26,15 @@ export default function Header({ activeTab }: HeaderProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/login', redirect: true });
+  const handleSignOut = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      await signOut({ callbackUrl: '/login' });
+    } catch (error) {
+      console.error('Sign out error:', error);
+      // Force redirect if signOut fails
+      window.location.href = '/login';
+    }
   };
 
   return (

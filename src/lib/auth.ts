@@ -30,16 +30,10 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/login',
-    signOut: '/login',
     error: '/login', // Redirect errors to login page
-  },
-  events: {
-    async signOut({ session, token }) {
-      // Clear session on signout
-      console.log('User signed out');
-    },
   },
   session: {
     strategy: 'database',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 };
