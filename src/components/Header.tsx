@@ -96,7 +96,7 @@ export default function Header({ activeTab }: HeaderProps) {
                 </button>
 
                 {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-64 bg-card border border-border rounded-lg shadow-lg py-2">
+                  <div className="absolute right-0 mt-2 w-64 bg-card border border-border rounded-lg shadow-lg py-2 z-[100]">
                     <div className="px-4 py-3 border-b border-border">
                       <p className="text-sm font-medium text-foreground">{session.user.name}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{session.user.email}</p>
@@ -146,7 +146,7 @@ export default function Header({ activeTab }: HeaderProps) {
                   </button>
 
                   {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-64 bg-card border border-border rounded-lg shadow-lg py-2">
+                    <div className="absolute right-0 mt-2 w-64 bg-card border border-border rounded-lg shadow-lg py-2 z-[100]">
                       <div className="px-4 py-3 border-b border-border">
                         <p className="text-sm font-medium text-foreground">{session.user.name}</p>
                         <p className="text-xs text-muted-foreground mt-0.5">{session.user.email}</p>
