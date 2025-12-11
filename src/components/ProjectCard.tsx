@@ -96,7 +96,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto">
             <Link
-              href={`/${currentProject.slug}`}
+              href={`/${currentProject.slug}?from=projects`}
               className="btn btn-primary text-xs px-2 sm:px-3 py-1 whitespace-nowrap text-center w-full sm:w-auto"
             >
               View Prototype
@@ -163,7 +163,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
 
         <div className="space-y-2">
           <Link
-            href={`/${currentProject.slug}`}
+            href={`/${currentProject.slug}?from=projects`}
             className="btn btn-primary w-full text-sm"
           >
             View Prototype

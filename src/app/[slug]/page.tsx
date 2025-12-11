@@ -34,34 +34,40 @@ export default async function ProjectPage({
   searchParams
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ share?: string }>;
+  searchParams: Promise<{ share?: string; from?: string }>;
 }) {
   const { slug } = await params;
-  const { share } = await searchParams;
+  const { share, from } = await searchParams;
   const project = await getProject(slug);
 
   if (!project) {
     notFound();
   }
 
-  // Determine back link based on share token
+  // Determine if we should show back button and where it should go
+  // - If has ?share=token: show back button to client share view
+  // - If has ?from=projects: show back button to projects (authenticated view)
+  // - Otherwise (direct link): no back button (external client view)
+  const showBackButton = !!(share || from);
   const backLink = share ? `/share/${share}` : '/projects';
   const backText = share ? '← Back to Projects' : '← All Projects';
 
   return (
     <div className="w-screen h-screen overflow-hidden relative">
-      {/* Navigation button */}
-      <div className="absolute top-4 left-4 z-20">
-        <Link
-          href={backLink}
-          className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-700 rounded-md text-sm hover:bg-white transition-colors shadow-sm border"
-        >
-          {backText}
-        </Link>
-      </div>
-      
+      {/* Navigation button - only show for authenticated or share link views */}
+      {showBackButton && (
+        <div className="absolute top-4 left-4 z-20">
+          <Link
+            href={backLink}
+            className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-700 rounded-md text-sm hover:bg-white transition-colors shadow-sm border"
+          >
+            {backText}
+          </Link>
+        </div>
+      )}
+
       {/* Full-screen Figma embed */}
-      <FigmaEmbed 
+      <FigmaEmbed
         url={project.figmaUrl}
         title={project.name}
       />
