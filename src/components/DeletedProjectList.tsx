@@ -57,7 +57,6 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
         message: `"${projectName}" has been restored.`,
         linkText: 'View in projects',
         linkHref: '/projects',
-        duration: 6000,
         variant: 'restore'
       });
     } catch (error) {

@@ -51,7 +51,6 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
         message: `All projects for "${clientLabel}" have been restored.`,
         linkText: 'View in projects',
         linkHref: '/projects',
-        duration: 6000,
         variant: 'restore'
       });
     } catch (error) {

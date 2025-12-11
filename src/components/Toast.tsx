@@ -30,7 +30,7 @@ export default function Toast({ message, linkText, linkHref, onClose, duration, 
     : { bg: '#2D0A0A', text: '#EF4444', border: '#5A1414' };
 
   return (
-    <div className="fixed top-16 left-0 right-0 z-40 animate-in slide-in-from-top duration-300">
+    <div className="fixed top-24 sm:top-16 left-0 right-0 z-40 animate-in slide-in-from-top duration-300">
       <div
         className="px-4 sm:px-6 py-3 sm:py-4 shadow-lg"
         style={{
