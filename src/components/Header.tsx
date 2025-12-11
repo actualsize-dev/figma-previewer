@@ -26,8 +26,8 @@ export default function Header({ activeTab }: HeaderProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/login' });
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: '/login', redirect: true });
   };
 
   return (
