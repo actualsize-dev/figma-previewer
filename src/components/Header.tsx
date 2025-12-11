@@ -92,7 +92,7 @@ export default function Header({ activeTab }: HeaderProps) {
               <div className="relative" ref={desktopMenuRef}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
                 >
                   {session.user.image ? (
                     <img
@@ -116,7 +116,7 @@ export default function Header({ activeTab }: HeaderProps) {
                     <button
                       type="button"
                       onClick={handleSignOut}
-                      className="w-full px-4 py-2 text-sm text-left text-muted-foreground hover:bg-muted transition-colors flex items-center gap-2"
+                      className="w-full px-4 py-2 text-sm text-left text-muted-foreground hover:bg-muted transition-colors flex items-center gap-2 cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
                       Sign out
@@ -143,7 +143,7 @@ export default function Header({ activeTab }: HeaderProps) {
                 <div className="relative" ref={mobileMenuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center hover:opacity-80 transition-opacity"
+                    className="flex items-center hover:opacity-80 transition-opacity cursor-pointer"
                   >
                     {session.user.image ? (
                       <img
@@ -167,7 +167,7 @@ export default function Header({ activeTab }: HeaderProps) {
                       <button
                         type="button"
                         onClick={handleSignOut}
-                        className="w-full px-4 py-2 text-sm text-left text-muted-foreground hover:bg-muted transition-colors flex items-center gap-2"
+                        className="w-full px-4 py-2 text-sm text-left text-muted-foreground hover:bg-muted transition-colors flex items-center gap-2 cursor-pointer"
                       >
                         <LogOut className="w-4 h-4" />
                         Sign out
