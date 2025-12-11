@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
           <h1 className="text-3xl font-bold text-foreground mb-8">Privacy Policy</h1>
 
           <div className="prose prose-sm max-w-none text-foreground space-y-6">
-            <p className="text-muted-foreground">Last Updated: December 9, 2025</p>
+            <p className="text-muted-foreground">Last Updated: December 11, 2025</p>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mt-8 mb-4">1. Introduction</h2>
@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
                 <li><strong>Project Information:</strong> Project names, slugs, and descriptions you create</li>
                 <li><strong>Figma URLs:</strong> Links to your Figma prototypes</li>
                 <li><strong>Client Labels:</strong> Custom categories and organizational labels</li>
-                <li><strong>Authentication Data:</strong> Credentials used to access the Service</li>
+                <li><strong>Authentication Data:</strong> When you sign in with Google OAuth, we collect your name, email address (@actualsize.com domain only), and profile picture from your Google account</li>
               </ul>
 
               <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">2.2 Automatically Collected Information</h3>
@@ -93,6 +93,7 @@ export default function PrivacyPolicyPage() {
                 We integrate with the following third-party services:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-foreground">
+                <li><strong>Google OAuth:</strong> For user authentication and sign-in (subject to Google's privacy policy). We only access your basic profile information (name, email, profile picture) and do not store your Google password</li>
                 <li><strong>Figma:</strong> For embedding and displaying prototypes (subject to Figma's privacy policy)</li>
                 <li><strong>Vercel:</strong> For hosting and infrastructure services</li>
               </ul>
@@ -110,6 +111,7 @@ export default function PrivacyPolicyPage() {
                 <li><strong>Active Projects:</strong> Retained indefinitely while you use the Service</li>
                 <li><strong>Soft-Deleted Projects:</strong> Retained for a reasonable period to allow restoration, then permanently deleted</li>
                 <li><strong>Share Links:</strong> Retained until expired or manually deleted</li>
+                <li><strong>Authentication Data:</strong> Your profile information (name, email, profile picture) is retained while you have an active account. Session data is automatically cleared upon logout</li>
                 <li><strong>Account Data:</strong> Retained while your account is active</li>
               </ul>
             </section>
