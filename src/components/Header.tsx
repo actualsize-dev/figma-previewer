@@ -12,12 +12,16 @@ interface HeaderProps {
 export default function Header({ activeTab }: HeaderProps) {
   const { data: session } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const desktopMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   // Close menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const clickedOutsideDesktop = desktopMenuRef.current && !desktopMenuRef.current.contains(event.target as Node);
+      const clickedOutsideMobile = mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node);
+
+      if (clickedOutsideDesktop && clickedOutsideMobile) {
         setShowUserMenu(false);
       }
     }
@@ -28,6 +32,7 @@ export default function Header({ activeTab }: HeaderProps) {
 
   const handleSignOut = async (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     try {
       await signOut({ callbackUrl: '/login' });
     } catch (error) {
@@ -84,7 +89,7 @@ export default function Header({ activeTab }: HeaderProps) {
               New Project
             </Link>
             {session?.user && (
-              <div className="relative" ref={menuRef}>
+              <div className="relative" ref={desktopMenuRef}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -109,6 +114,7 @@ export default function Header({ activeTab }: HeaderProps) {
                       <p className="text-xs text-muted-foreground mt-0.5">{session.user.email}</p>
                     </div>
                     <button
+                      type="button"
                       onClick={handleSignOut}
                       className="w-full px-4 py-2 text-sm text-left text-muted-foreground hover:bg-muted transition-colors flex items-center gap-2"
                     >
@@ -134,7 +140,7 @@ export default function Header({ activeTab }: HeaderProps) {
                 New Project
               </Link>
               {session?.user && (
-                <div className="relative" ref={menuRef}>
+                <div className="relative" ref={mobileMenuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="flex items-center hover:opacity-80 transition-opacity"
@@ -159,6 +165,7 @@ export default function Header({ activeTab }: HeaderProps) {
                         <p className="text-xs text-muted-foreground mt-0.5">{session.user.email}</p>
                       </div>
                       <button
+                        type="button"
                         onClick={handleSignOut}
                         className="w-full px-4 py-2 text-sm text-left text-muted-foreground hover:bg-muted transition-colors flex items-center gap-2"
                       >
