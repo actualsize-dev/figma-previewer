@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import FigmaThumbnail from './FigmaThumbnail';
+import FigmaIcon from './FigmaIcon';
 
 type Project = {
   id: string;
@@ -36,9 +37,12 @@ export default function ShareProjectCard({ project, shareToken }: ShareProjectCa
 
       {/* Content */}
       <div className="p-6">
-        <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-foreground/80 transition-colors">
-          {project.name}
-        </h3>
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-lg font-semibold text-foreground group-hover:text-foreground/80 transition-colors flex-1">
+            {project.name}
+          </h3>
+          <FigmaIcon className="w-5 h-5 flex-shrink-0 ml-2 opacity-60" />
+        </div>
         <p className="text-sm text-muted-foreground">
           {new Date(project.createdAt).toLocaleDateString('en-US', {
             year: 'numeric',

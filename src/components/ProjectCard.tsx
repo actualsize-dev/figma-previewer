@@ -7,6 +7,7 @@ import DeleteProjectButton from './DeleteProjectButton';
 import EditableClientLabel from './EditableClientLabel';
 import InlineEdit from './InlineEdit';
 import FigmaThumbnail from './FigmaThumbnail';
+import FigmaIcon from './FigmaIcon';
 
 type Project = {
   id: string;
@@ -83,11 +84,14 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
                 inputClassName="text-sm font-semibold"
                 placeholder="Project name..."
               />
-              <EditableClientLabel
-                projectId={currentProject.id}
-                currentLabel={currentProject.clientLabel || 'Uncategorized'}
-                onLabelUpdate={handleLabelUpdate}
-              />
+              <div className="flex items-center gap-1.5">
+                <EditableClientLabel
+                  projectId={currentProject.id}
+                  currentLabel={currentProject.clientLabel || 'Uncategorized'}
+                  onLabelUpdate={handleLabelUpdate}
+                />
+                <FigmaIcon className="w-3.5 h-3.5 opacity-60" />
+              </div>
             </div>
             <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
               <span className="whitespace-nowrap">Created {new Date(currentProject.createdAt).toLocaleDateString()}</span>
@@ -136,11 +140,14 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
               placeholder="Project name..."
             />
           </div>
-          <EditableClientLabel
-            projectId={currentProject.id}
-            currentLabel={currentProject.clientLabel || 'Uncategorized'}
-            onLabelUpdate={handleLabelUpdate}
-          />
+          <div className="flex items-center gap-2">
+            <EditableClientLabel
+              projectId={currentProject.id}
+              currentLabel={currentProject.clientLabel || 'Uncategorized'}
+              onLabelUpdate={handleLabelUpdate}
+            />
+            <FigmaIcon className="w-4 h-4 opacity-60" />
+          </div>
         </div>
 
         <div className="flex items-center space-x-4 mb-4">
