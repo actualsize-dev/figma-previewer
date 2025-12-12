@@ -55,13 +55,24 @@ export async function POST(request: NextRequest) {
       counter++;
     }
 
+    const finalClientLabel = clientLabel || 'Uncategorized';
+
+    // Ensure client record exists in clients table (for metadata like descriptions)
+    if (finalClientLabel && finalClientLabel !== 'Uncategorized') {
+      await prisma.client.upsert({
+        where: { clientLabel: finalClientLabel },
+        update: {}, // Don't update anything if it exists
+        create: { clientLabel: finalClientLabel }, // Create if it doesn't exist
+      });
+    }
+
     // Create new project
     const newProject = await prisma.project.create({
       data: {
         name,
         slug: finalSlug,
         figmaUrl,
-        clientLabel: clientLabel || 'Uncategorized'
+        clientLabel: finalClientLabel
       }
     });
 

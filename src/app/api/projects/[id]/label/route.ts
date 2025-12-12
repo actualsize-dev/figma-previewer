@@ -17,15 +17,26 @@ export async function PATCH(
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
+    const finalClientLabel = clientLabel || 'Uncategorized';
+
+    // Ensure client record exists in clients table (for metadata like descriptions)
+    if (finalClientLabel && finalClientLabel !== 'Uncategorized') {
+      await prisma.client.upsert({
+        where: { clientLabel: finalClientLabel },
+        update: {}, // Don't update anything if it exists
+        create: { clientLabel: finalClientLabel }, // Create if it doesn't exist
+      });
+    }
+
     // Update the client label
     const updatedProject = await prisma.project.update({
       where: { id },
       data: {
-        clientLabel: clientLabel || 'Uncategorized'
+        clientLabel: finalClientLabel
       }
     });
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: 'Client label updated successfully',
       project: updatedProject
     });
