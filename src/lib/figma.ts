@@ -74,20 +74,27 @@ export async function generateFigmaThumbnail(
     if (fileInfo.document?.children) {
       const firstCanvas = fileInfo.document.children[0];
       if (firstCanvas && firstCanvas.children && firstCanvas.children.length > 0) {
-        // Look for the largest frame (likely the main artboard)
-        let bestFrame = firstCanvas.children[0];
-        for (const child of firstCanvas.children) {
-          if (child.type === 'FRAME' && child.absoluteBoundingBox) {
+        // Filter to only frames with bounding boxes (skip videos and other special elements)
+        const validFrames = firstCanvas.children.filter(
+          (child: any) => child.type === 'FRAME' && child.absoluteBoundingBox
+        );
+
+        if (validFrames.length > 0) {
+          // Look for the largest valid frame (likely the main artboard)
+          let bestFrame = validFrames[0];
+          for (const child of validFrames) {
             const currentArea = child.absoluteBoundingBox.width * child.absoluteBoundingBox.height;
-            const bestArea = bestFrame.absoluteBoundingBox ? 
-              bestFrame.absoluteBoundingBox.width * bestFrame.absoluteBoundingBox.height : 0;
-            
+            const bestArea = bestFrame.absoluteBoundingBox.width * bestFrame.absoluteBoundingBox.height;
+
             if (currentArea > bestArea) {
               bestFrame = child;
             }
           }
+          nodeId = bestFrame.id;
+        } else {
+          // Fallback to the canvas itself
+          nodeId = firstCanvas.id;
         }
-        nodeId = bestFrame.id;
       } else {
         // Fallback to the canvas itself
         nodeId = firstCanvas.id;
