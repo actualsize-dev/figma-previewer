@@ -184,7 +184,7 @@ export default function Header({ activeTab }: HeaderProps) {
               {activeTab === 'projects' ? (
                 <span className="text-sm font-medium text-foreground relative px-3 py-1.5">
                   Projects
-                  <div className="absolute bottom-[-20px] left-0 right-0 h-0.5 bg-foreground"></div>
+                  <div className="absolute bottom-[-17px] left-0 right-0 h-0.5 bg-foreground"></div>
                 </span>
               ) : (
                 <Link href="/projects" className="text-sm text-muted-foreground nav-link">
@@ -194,7 +194,7 @@ export default function Header({ activeTab }: HeaderProps) {
               {activeTab === 'clients' ? (
                 <span className="text-sm font-medium text-foreground relative px-3 py-1.5">
                   Clients
-                  <div className="absolute bottom-[-20px] left-0 right-0 h-0.5 bg-foreground"></div>
+                  <div className="absolute bottom-[-17px] left-0 right-0 h-0.5 bg-foreground"></div>
                 </span>
               ) : (
                 <Link href="/clients" className="text-sm text-muted-foreground nav-link">
@@ -204,7 +204,7 @@ export default function Header({ activeTab }: HeaderProps) {
               {activeTab === 'deleted' ? (
                 <span className="text-sm font-medium text-foreground relative px-3 py-1.5">
                   Deleted
-                  <div className="absolute bottom-[-20px] left-0 right-0 h-0.5 bg-foreground"></div>
+                  <div className="absolute bottom-[-17px] left-0 right-0 h-0.5 bg-foreground"></div>
                 </span>
               ) : (
                 <Link href="/projects/deleted" className="text-sm text-muted-foreground nav-link">
