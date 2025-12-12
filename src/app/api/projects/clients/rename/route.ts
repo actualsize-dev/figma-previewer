@@ -25,21 +25,59 @@ export async function PATCH(request: NextRequest) {
       }, { status: 409 });
     }
 
-    // Update all projects with the old client label
-    const result = await prisma.project.updateMany({
-      where: {
-        clientLabel: oldClientLabel
-      },
-      data: {
-        clientLabel: newClientLabel.trim()
+    // Use a transaction to update everything atomically
+    const trimmedNewLabel = newClientLabel.trim();
+
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. Update all projects with the old client label
+      const projectsResult = await tx.project.updateMany({
+        where: {
+          clientLabel: oldClientLabel
+        },
+        data: {
+          clientLabel: trimmedNewLabel
+        }
+      });
+
+      // 2. Update all share links with the old client label
+      const shareLinksResult = await tx.shareLink.updateMany({
+        where: {
+          clientLabel: oldClientLabel
+        },
+        data: {
+          clientLabel: trimmedNewLabel
+        }
+      });
+
+      // 3. Update or create the client record in the clients table
+      // First, try to delete the old client record
+      await tx.client.deleteMany({
+        where: {
+          clientLabel: oldClientLabel
+        }
+      });
+
+      // Then, ensure the new client record exists
+      if (trimmedNewLabel && trimmedNewLabel !== 'Uncategorized') {
+        await tx.client.upsert({
+          where: { clientLabel: trimmedNewLabel },
+          update: {}, // Don't update if it exists
+          create: { clientLabel: trimmedNewLabel }
+        });
       }
+
+      return {
+        projectsUpdated: projectsResult.count,
+        shareLinksUpdated: shareLinksResult.count
+      };
     });
 
     return NextResponse.json({
       message: 'Client category renamed successfully',
-      updatedCount: result.count,
+      updatedCount: result.projectsUpdated,
+      shareLinksUpdated: result.shareLinksUpdated,
       oldName: oldClientLabel,
-      newName: newClientLabel.trim()
+      newName: trimmedNewLabel
     });
   } catch (error) {
     console.error('Error renaming client category:', error);
