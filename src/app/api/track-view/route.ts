@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const userAgent = request.headers.get('user-agent') || undefined;
     const referer = request.headers.get('referer') || undefined;
     const forwarded = request.headers.get('x-forwarded-for');
-    const ipAddress = forwarded ? forwarded.split(',')[0] : request.ip || undefined;
+    const ipAddress = forwarded ? forwarded.split(',')[0] : undefined;
 
     // Create view record
     await prisma.projectView.create({
