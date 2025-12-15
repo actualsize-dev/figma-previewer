@@ -22,6 +22,8 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectiveRestoreClient, setSelectiveRestoreClient] = useState<string | null>(null);
+  const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set());
+  const [isProcessing, setIsProcessing] = useState(false);
   const { showToast } = useToast();
 
   const filteredClients = deletedClients.filter(client =>
@@ -83,8 +85,154 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
     }
   };
 
+  const toggleClientSelection = (clientLabel: string) => {
+    setSelectedClients(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(clientLabel)) {
+        newSet.delete(clientLabel);
+      } else {
+        newSet.add(clientLabel);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedClients.size === filteredClients.length) {
+      setSelectedClients(new Set());
+    } else {
+      setSelectedClients(new Set(filteredClients.map(c => c.label)));
+    }
+  };
+
+  const handleBulkRestoreAll = async () => {
+    if (selectedClients.size === 0) return;
+
+    const count = selectedClients.size;
+    const confirmMessage = `Are you sure you want to restore all projects for ${count} client${count !== 1 ? 's' : ''}?`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const restorePromises = Array.from(selectedClients).map(clientLabel =>
+        fetch(`/api/clients/${encodeURIComponent(clientLabel)}/restore-all`, {
+          method: 'POST',
+        })
+      );
+
+      const results = await Promise.all(restorePromises);
+      const failedRestores = results.filter(r => !r.ok);
+
+      if (failedRestores.length > 0) {
+        throw new Error(`Failed to restore ${failedRestores.length} client(s)`);
+      }
+
+      // Remove restored clients from state
+      setDeletedClients(prevClients =>
+        prevClients.filter(client => !selectedClients.has(client.label))
+      );
+
+      setSelectedClients(new Set());
+
+      showToast({
+        message: `${count} client${count !== 1 ? 's have' : ' has'} been restored.`,
+        linkText: 'View in projects',
+        linkHref: '/projects',
+        variant: 'restore'
+      });
+    } catch (error) {
+      console.error('Error restoring clients:', error);
+      alert(error instanceof Error ? error.message : 'Failed to restore clients. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleBulkPermanentDelete = async () => {
+    if (selectedClients.size === 0) return;
+
+    const count = selectedClients.size;
+    const totalProjects = filteredClients
+      .filter(c => selectedClients.has(c.label))
+      .reduce((sum, c) => sum + c.projectCount, 0);
+
+    const confirmMessage = `Are you sure you want to permanently delete ${count} client${count !== 1 ? 's' : ''} and ${totalProjects} project${totalProjects !== 1 ? 's' : ''}? This action cannot be undone and will free up the project names and URLs for future use.`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const deletePromises = Array.from(selectedClients).map(clientLabel =>
+        fetch(`/api/clients/${encodeURIComponent(clientLabel)}/permanent-delete`, {
+          method: 'DELETE',
+        })
+      );
+
+      const results = await Promise.all(deletePromises);
+      const failedDeletes = results.filter(r => !r.ok);
+
+      if (failedDeletes.length > 0) {
+        throw new Error(`Failed to permanently delete ${failedDeletes.length} client(s)`);
+      }
+
+      // Remove deleted clients from state
+      setDeletedClients(prevClients =>
+        prevClients.filter(client => !selectedClients.has(client.label))
+      );
+
+      setSelectedClients(new Set());
+
+      alert(`${count} client${count !== 1 ? 's and their' : ' and its'} projects have been permanently deleted.`);
+    } catch (error) {
+      console.error('Error deleting clients:', error);
+      alert(error instanceof Error ? error.message : 'Failed to delete clients. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const showBulkActions = viewMode === 'list' && selectedClients.size > 0;
+
   return (
     <div className="space-y-6">
+      {/* Bulk actions bar */}
+      {showBulkActions && (
+        <div className="bg-primary/10 border border-primary/20 rounded-lg px-4 py-3 flex items-center justify-between">
+          <div className="text-sm font-medium text-foreground">
+            {selectedClients.size} client{selectedClients.size !== 1 ? 's' : ''} selected
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSelectedClients(new Set())}
+              className="btn btn-outline text-xs px-3 py-1"
+            >
+              Clear Selection
+            </button>
+            <button
+              onClick={handleBulkRestoreAll}
+              disabled={isProcessing}
+              className="btn btn-primary text-xs px-3 py-1"
+            >
+              {isProcessing ? 'Processing...' : `Restore All Projects for ${selectedClients.size} Client${selectedClients.size !== 1 ? 's' : ''}`}
+            </button>
+            <button
+              onClick={handleBulkPermanentDelete}
+              disabled={isProcessing}
+              className="btn btn-destructive text-xs px-3 py-1"
+            >
+              {isProcessing ? 'Processing...' : `Permanently Delete ${selectedClients.size} Client${selectedClients.size !== 1 ? 's' : ''}`}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Controls */}
       <div className="flex items-center gap-2 justify-between">
         <div className="relative flex-1 max-w-md">
@@ -133,6 +281,21 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
         </div>
       </div>
 
+      {/* Select all checkbox (list view only) */}
+      {viewMode === 'list' && filteredClients.length > 0 && (
+        <div className="bg-muted/30 rounded-lg px-4 py-2 flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={selectedClients.size === filteredClients.length && filteredClients.length > 0}
+            onChange={toggleSelectAll}
+            className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer"
+          />
+          <label className="text-sm text-muted-foreground cursor-pointer" onClick={toggleSelectAll}>
+            Select all clients
+          </label>
+        </div>
+      )}
+
       {/* Client Grid/List */}
       <div className={viewMode === 'grid' ? 'grid gap-6 md:grid-cols-2 lg:grid-cols-3' : 'space-y-4'}>
         <AnimatePresence mode="popLayout">
@@ -153,10 +316,17 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
               >
                 {viewMode === 'list' ? (
                   // Compact list view
-                  <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20 overflow-hidden">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-1 flex-wrap">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedClients.has(client.label)}
+                      onChange={() => toggleClientSelection(client.label)}
+                      className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer mt-3"
+                    />
+                    <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20 overflow-hidden flex-1">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-1">
                           <h3 className="text-sm font-semibold text-foreground truncate">{client.label}</h3>
                           <span
                             className="text-xs px-2 py-1 rounded whitespace-nowrap"
@@ -197,6 +367,7 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
                       </div>
                     </div>
                   </div>
+                </div>
                 ) : (
                   // Grid view
                   <div className="bg-card border border-border rounded-lg overflow-hidden transition-all hover:shadow-sm">
