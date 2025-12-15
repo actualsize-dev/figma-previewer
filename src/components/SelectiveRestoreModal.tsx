@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type DeletedProject = {
   id: string;
@@ -131,11 +132,9 @@ export default function SelectiveRestoreModal({ clientLabel, onClose, onRestoreC
             <div className="space-y-3">
               {/* Select All */}
               <label className="flex items-center gap-3 p-3 bg-muted rounded-lg cursor-pointer hover:bg-muted/80 transition-colors">
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={selectedProjects.size === projects.length}
-                  onChange={toggleAll}
-                  className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0"
+                  onCheckedChange={toggleAll}
                 />
                 <div className="flex-1">
                   <span className="text-sm font-medium text-foreground">
@@ -150,11 +149,9 @@ export default function SelectiveRestoreModal({ clientLabel, onClose, onRestoreC
                   key={project.id}
                   className="flex items-center gap-3 p-3 bg-background border border-border rounded-lg cursor-pointer hover:border-foreground/20 transition-colors"
                 >
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={selectedProjects.has(project.id)}
-                    onChange={() => toggleProject(project.id)}
-                    className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0"
+                    onCheckedChange={() => toggleProject(project.id)}
                   />
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-foreground truncate">
