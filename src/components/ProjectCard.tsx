@@ -76,7 +76,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
       <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20 overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <div className="flex items-center gap-2 mb-1">
               <InlineEdit
                 value={currentProject.name}
                 onSave={handleNameUpdate}
