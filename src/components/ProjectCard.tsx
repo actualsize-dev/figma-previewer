@@ -76,22 +76,20 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
       <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20 overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-1 flex-wrap">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <InlineEdit
                 value={currentProject.name}
                 onSave={handleNameUpdate}
-                className="text-sm font-semibold text-foreground truncate"
+                className="text-sm font-semibold text-foreground"
                 inputClassName="text-sm font-semibold"
                 placeholder="Project name..."
               />
-              <div className="flex items-center gap-1.5">
-                <EditableClientLabel
-                  projectId={currentProject.id}
-                  currentLabel={currentProject.clientLabel || 'Uncategorized'}
-                  onLabelUpdate={handleLabelUpdate}
-                />
-                <FigmaIcon className="w-3.5 h-3.5 opacity-60" />
-              </div>
+              <EditableClientLabel
+                projectId={currentProject.id}
+                currentLabel={currentProject.clientLabel || 'Uncategorized'}
+                onLabelUpdate={handleLabelUpdate}
+              />
+              <FigmaIcon className="w-3.5 h-3.5 opacity-60 flex-shrink-0" />
             </div>
             <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
               <span className="whitespace-nowrap">Created {new Date(currentProject.createdAt).toLocaleDateString()}</span>
