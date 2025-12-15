@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import FigmaEmbed from '@/components/FigmaEmbed';
+import ViewTracker from '@/components/ViewTracker';
 import { prisma } from '@/lib/db';
 
 type Project = {
@@ -54,6 +55,9 @@ export default async function ProjectPage({
 
   return (
     <div className="w-screen h-screen overflow-hidden relative">
+      {/* Track view */}
+      <ViewTracker projectId={project.id} projectSlug={project.slug} />
+
       {/* Navigation button - only show for authenticated or share link views */}
       {showBackButton && (
         <div className="absolute top-4 left-4 z-20">
