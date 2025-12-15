@@ -116,7 +116,7 @@ export default function InlineEdit({
   return (
     <button
       onClick={() => setIsEditing(true)}
-      className={`text-left hover:bg-gray-100 rounded px-1 py-1 transition-colors group w-full ${className}`}
+      className={`text-left hover:bg-gray-100 rounded px-1 py-1 transition-colors group ${className}`}
       title="Click to edit"
     >
       {value ? (

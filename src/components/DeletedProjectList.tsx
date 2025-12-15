@@ -26,6 +26,8 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
   const [deletedProjects, setDeletedProjects] = useState(initialDeletedProjects);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProjects, setSelectedProjects] = useState<Set<string>>(new Set());
+  const [isProcessing, setIsProcessing] = useState(false);
   const { showToast } = useToast();
 
   const filteredProjects = deletedProjects.filter(project =>
@@ -35,9 +37,35 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
   );
 
   const handleProjectRemoved = (removedId: string) => {
-    setDeletedProjects(prevProjects => 
+    setDeletedProjects(prevProjects =>
       prevProjects.filter(project => project.id !== removedId)
     );
+    // Remove from selection
+    setSelectedProjects(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(removedId);
+      return newSet;
+    });
+  };
+
+  const toggleProjectSelection = (projectId: string) => {
+    setSelectedProjects(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(projectId)) {
+        newSet.delete(projectId);
+      } else {
+        newSet.add(projectId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedProjects.size === filteredProjects.length) {
+      setSelectedProjects(new Set());
+    } else {
+      setSelectedProjects(new Set(filteredProjects.map(p => p.id)));
+    }
   };
 
   const handleRestore = async (projectId: string, projectName: string) => {
@@ -67,7 +95,7 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
 
   const handlePermanentDelete = async (projectId: string, projectName: string) => {
     const confirmMessage = `Are you sure you want to permanently delete "${projectName}"? This action cannot be undone and will free up the project name and URL for future use.`;
-    
+
     if (!confirm(confirmMessage)) {
       return;
     }
@@ -83,13 +111,104 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
 
       const result = await response.json();
       handleProjectRemoved(projectId);
-      
+
       alert(`"${projectName}" has been permanently deleted. The project name and URL are now available for new projects.`);
     } catch (error) {
       console.error('Error permanently deleting project:', error);
       alert('Failed to permanently delete project. Please try again.');
     }
   };
+
+  const handleBulkRestore = async () => {
+    if (selectedProjects.size === 0) return;
+
+    const count = selectedProjects.size;
+    const confirmMessage = `Are you sure you want to restore ${count} project${count !== 1 ? 's' : ''}?`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const restorePromises = Array.from(selectedProjects).map(projectId =>
+        fetch(`/api/projects/${projectId}/restore`, {
+          method: 'POST',
+        })
+      );
+
+      const results = await Promise.all(restorePromises);
+      const failedRestores = results.filter(r => !r.ok);
+
+      if (failedRestores.length > 0) {
+        throw new Error(`Failed to restore ${failedRestores.length} project(s)`);
+      }
+
+      // Remove restored projects from state
+      setDeletedProjects(prevProjects =>
+        prevProjects.filter(project => !selectedProjects.has(project.id))
+      );
+
+      setSelectedProjects(new Set());
+
+      showToast({
+        message: `${count} project${count !== 1 ? 's have' : ' has'} been restored.`,
+        linkText: 'View in projects',
+        linkHref: '/projects',
+        variant: 'restore'
+      });
+    } catch (error) {
+      console.error('Error restoring projects:', error);
+      alert(error instanceof Error ? error.message : 'Failed to restore projects. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleBulkPermanentDelete = async () => {
+    if (selectedProjects.size === 0) return;
+
+    const count = selectedProjects.size;
+    const confirmMessage = `Are you sure you want to permanently delete ${count} project${count !== 1 ? 's' : ''}? This action cannot be undone and will free up the project names and URLs for future use.`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const deletePromises = Array.from(selectedProjects).map(projectId =>
+        fetch(`/api/projects/${projectId}/permanent-delete`, {
+          method: 'DELETE',
+        })
+      );
+
+      const results = await Promise.all(deletePromises);
+      const failedDeletes = results.filter(r => !r.ok);
+
+      if (failedDeletes.length > 0) {
+        throw new Error(`Failed to permanently delete ${failedDeletes.length} project(s)`);
+      }
+
+      // Remove deleted projects from state
+      setDeletedProjects(prevProjects =>
+        prevProjects.filter(project => !selectedProjects.has(project.id))
+      );
+
+      setSelectedProjects(new Set());
+
+      alert(`${count} project${count !== 1 ? 's have' : ' has'} been permanently deleted. The project names and URLs are now available for new projects.`);
+    } catch (error) {
+      console.error('Error permanently deleting projects:', error);
+      alert(error instanceof Error ? error.message : 'Failed to permanently delete projects. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const showBulkActions = viewMode === 'list' && selectedProjects.size > 0;
 
   return (
     <div className="space-y-6">
@@ -141,10 +260,58 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
         </div>
       </div>
 
+      {/* Bulk actions bar */}
+      {showBulkActions && (
+        <div className="bg-primary/10 border border-primary/20 rounded-lg px-4 py-3 flex items-center justify-between">
+          <div className="text-sm font-medium text-foreground">
+            {selectedProjects.size} project{selectedProjects.size !== 1 ? 's' : ''} selected
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSelectedProjects(new Set())}
+              className="btn btn-outline text-xs px-3 py-1"
+            >
+              Clear Selection
+            </button>
+            <button
+              onClick={handleBulkRestore}
+              disabled={isProcessing}
+              className="btn btn-primary text-xs px-3 py-1"
+            >
+              {isProcessing ? 'Processing...' : `Restore ${selectedProjects.size}`}
+            </button>
+            <button
+              onClick={handleBulkPermanentDelete}
+              disabled={isProcessing}
+              className="btn btn-destructive text-xs px-3 py-1"
+            >
+              {isProcessing ? 'Processing...' : `Permanently Delete ${selectedProjects.size}`}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Select all checkbox (list view only) */}
+      {viewMode === 'list' && filteredProjects.length > 0 && (
+        <div className="bg-muted/30 rounded-lg px-4 py-2 flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={selectedProjects.size === filteredProjects.length && filteredProjects.length > 0}
+            onChange={toggleSelectAll}
+            className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer"
+          />
+          <label className="text-sm text-muted-foreground cursor-pointer" onClick={toggleSelectAll}>
+            Select all projects
+          </label>
+        </div>
+      )}
+
       {/* Project Grid/List */}
       <div className={viewMode === 'grid' ? 'grid gap-6 md:grid-cols-2 lg:grid-cols-3' : 'space-y-4'}>
         <AnimatePresence mode="popLayout">
-          {filteredProjects.map((project) => (
+          {filteredProjects.map((project) => {
+            const isListView = viewMode === 'list';
+            return (
           <motion.div
             key={project.id}
             layout
@@ -155,10 +322,19 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
               duration: 0.3,
               layout: { duration: 0.4 }
             }}
+            className={isListView ? 'flex items-start gap-3' : ''}
           >
+            {isListView && (
+              <input
+                type="checkbox"
+                checked={selectedProjects.has(project.id)}
+                onChange={() => toggleProjectSelection(project.id)}
+                className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer mt-3"
+              />
+            )}
             {viewMode === 'list' ? (
               // Compact list view
-              <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20 overflow-hidden">
+              <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20 overflow-hidden flex-1">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1 flex-wrap">

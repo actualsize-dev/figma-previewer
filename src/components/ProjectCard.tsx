@@ -133,7 +133,7 @@ export default function ProjectCard({ project, onProjectDeleted, onProjectUpdate
             <InlineEdit
               value={currentProject.name}
               onSave={handleNameUpdate}
-              className="text-base font-semibold text-foreground block w-full"
+              className="text-base font-semibold text-foreground block"
               inputClassName="text-base font-semibold w-full"
               placeholder="Project name..."
             />
