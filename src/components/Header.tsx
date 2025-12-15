@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { LogOut, User } from 'lucide-react';
 
 interface HeaderProps {
-  activeTab?: 'projects' | 'clients' | 'deleted';
+  activeTab?: 'projects' | 'clients' | 'deleted' | 'insights';
 }
 
 export default function Header({ activeTab }: HeaderProps) {
@@ -80,6 +80,16 @@ export default function Header({ activeTab }: HeaderProps) {
               ) : (
                 <Link href="/projects/deleted" className="text-sm text-muted-foreground nav-link">
                   Deleted
+                </Link>
+              )}
+              {activeTab === 'insights' ? (
+                <span className="text-sm font-medium text-foreground relative px-3 py-1.5">
+                  Insights
+                  <div className="absolute bottom-[-16px] left-0 right-0 h-0.5 bg-foreground"></div>
+                </span>
+              ) : (
+                <Link href="/insights" className="text-sm text-muted-foreground nav-link">
+                  Insights
                 </Link>
               )}
             </nav>
@@ -209,6 +219,16 @@ export default function Header({ activeTab }: HeaderProps) {
               ) : (
                 <Link href="/projects/deleted" className="text-sm text-muted-foreground nav-link">
                   Deleted
+                </Link>
+              )}
+              {activeTab === 'insights' ? (
+                <span className="text-sm font-medium text-foreground relative px-3 py-1.5">
+                  Insights
+                  <div className="absolute bottom-[-17px] left-0 right-0 h-0.5 bg-foreground"></div>
+                </span>
+              ) : (
+                <Link href="/insights" className="text-sm text-muted-foreground nav-link">
+                  Insights
                 </Link>
               )}
             </nav>
