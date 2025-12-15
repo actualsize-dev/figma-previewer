@@ -143,7 +143,7 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
               <InlineEdit
                 value={client.description || ''}
                 onSave={handleDescriptionUpdate}
-                className={`text-xs text-muted-foreground ${!isDescriptionExpanded ? 'line-clamp-1' : ''}`}
+                className={`text-xs text-muted-foreground ${!isDescriptionExpanded ? 'line-clamp-1' : 'whitespace-pre-wrap'}`}
                 inputClassName="text-xs"
                 placeholder="Click to add description..."
                 multiline
@@ -221,7 +221,7 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
             <InlineEdit
               value={client.description || ''}
               onSave={handleDescriptionUpdate}
-              className={`text-sm text-muted-foreground ${!isDescriptionExpanded ? 'line-clamp-3' : ''}`}
+              className={`text-sm text-muted-foreground ${!isDescriptionExpanded ? 'line-clamp-3' : 'whitespace-pre-wrap'}`}
               inputClassName="text-sm"
               placeholder="Click to add description..."
               multiline
