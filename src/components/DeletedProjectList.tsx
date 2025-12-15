@@ -7,6 +7,7 @@ import FigmaThumbnail from './FigmaThumbnail';
 import { Grid3x3, List } from 'lucide-react';
 import { getCategoryColor } from '@/utils/categoryColors';
 import { useToast } from '@/contexts/ToastContext';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type DeletedProject = {
   id: string;
@@ -294,11 +295,9 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
       {/* Select all checkbox (list view only) */}
       {viewMode === 'list' && filteredProjects.length > 0 && (
         <div className="bg-muted/30 rounded-lg px-4 py-2 flex items-center gap-3">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={selectedProjects.size === filteredProjects.length && filteredProjects.length > 0}
-            onChange={toggleSelectAll}
-            className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer"
+            onCheckedChange={toggleSelectAll}
           />
           <label className="text-sm text-muted-foreground cursor-pointer" onClick={toggleSelectAll}>
             Select all projects
@@ -325,11 +324,10 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
             className={isListView ? 'flex items-start gap-3' : ''}
           >
             {isListView && (
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={selectedProjects.has(project.id)}
-                onChange={() => toggleProjectSelection(project.id)}
-                className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer mt-3"
+                onCheckedChange={() => toggleProjectSelection(project.id)}
+                className="mt-3"
               />
             )}
             {viewMode === 'list' ? (

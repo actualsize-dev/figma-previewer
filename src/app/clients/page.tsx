@@ -7,6 +7,7 @@ import NewClientCard from '@/components/NewClientCard';
 import BrandingFooter from '@/components/BrandingFooter';
 import Header from '@/components/Header';
 import { Grid3x3, List } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type Project = {
   id: string;
@@ -25,6 +26,8 @@ export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [clientDescriptions, setClientDescriptions] = useState<Map<string, string | null>>(new Map());
+  const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set());
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -126,6 +129,73 @@ export default function ClientsPage() {
     });
   };
 
+  const toggleClientSelection = (clientLabel: string) => {
+    setSelectedClients(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(clientLabel)) {
+        newSet.delete(clientLabel);
+      } else {
+        newSet.add(clientLabel);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedClients.size === filteredClients.length) {
+      setSelectedClients(new Set());
+    } else {
+      setSelectedClients(new Set(filteredClients.map(c => c.label)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedClients.size === 0) return;
+
+    const count = selectedClients.size;
+    const totalProjects = filteredClients
+      .filter(c => selectedClients.has(c.label))
+      .reduce((sum, c) => sum + c.projectCount, 0);
+
+    const confirmMessage = `Are you sure you want to delete ${count} client${count !== 1 ? 's' : ''} and move ${totalProjects} project${totalProjects !== 1 ? 's' : ''} to the deleted section?`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const deletePromises = Array.from(selectedClients).map(clientLabel =>
+        fetch(`/api/clients/${encodeURIComponent(clientLabel)}`, {
+          method: 'DELETE',
+        })
+      );
+
+      const results = await Promise.all(deletePromises);
+      const failedDeletes = results.filter(r => !r.ok);
+
+      if (failedDeletes.length > 0) {
+        throw new Error(`Failed to delete ${failedDeletes.length} client(s)`);
+      }
+
+      // Refresh projects list to update client counts
+      const response = await fetch('/api/projects');
+      const data = await response.json();
+      setProjects(data.projects || []);
+
+      setSelectedClients(new Set());
+      alert(`${count} client${count !== 1 ? 's have' : ' has'} been deleted and moved to the deleted clients section.`);
+    } catch (error) {
+      console.error('Error deleting clients:', error);
+      alert(error instanceof Error ? error.message : 'Failed to delete clients. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const showBulkActions = viewMode === 'list' && selectedClients.size > 0;
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header activeTab="clients" />
@@ -172,6 +242,30 @@ export default function ClientsPage() {
                   {filteredClients.length} client{filteredClients.length !== 1 ? 's' : ''}
                 </div>
               </div>
+
+              {/* Bulk actions bar */}
+              {showBulkActions && (
+                <div className="bg-primary/10 border border-primary/20 rounded-lg px-4 py-3 flex items-center justify-between">
+                  <div className="text-sm font-medium text-foreground">
+                    {selectedClients.size} client{selectedClients.size !== 1 ? 's' : ''} selected
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setSelectedClients(new Set())}
+                      className="btn btn-outline text-xs px-3 py-1"
+                    >
+                      Clear Selection
+                    </button>
+                    <button
+                      onClick={handleBulkDelete}
+                      disabled={isProcessing}
+                      className="btn btn-destructive text-xs px-3 py-1"
+                    >
+                      {isProcessing ? 'Processing...' : `Delete ${selectedClients.size} Client${selectedClients.size !== 1 ? 's' : ''}`}
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Controls */}
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
@@ -221,6 +315,19 @@ export default function ClientsPage() {
                 </div>
               </div>
 
+              {/* Select all checkbox (list view only) */}
+              {viewMode === 'list' && filteredClients.length > 0 && (
+                <div className="bg-muted/30 rounded-lg px-4 py-2 flex items-center gap-3">
+                  <Checkbox
+                    checked={selectedClients.size === filteredClients.length && filteredClients.length > 0}
+                    onCheckedChange={toggleSelectAll}
+                  />
+                  <label className="text-sm text-muted-foreground cursor-pointer" onClick={toggleSelectAll}>
+                    Select all clients
+                  </label>
+                </div>
+              )}
+
               {/* Clients grid/list */}
               {filteredClients.length === 0 ? (
                 <div className="text-center py-16">
@@ -251,14 +358,33 @@ export default function ClientsPage() {
                     <NewClientCard onProjectAdded={handleProjectAdded} />
                   )}
                   {filteredClients.map((client) => (
-                    <ClientCard
-                      key={client.label}
-                      client={client}
-                      onClientUpdated={handleClientUpdated}
-                      onProjectAdded={handleProjectAdded}
-                      onDescriptionUpdated={handleDescriptionUpdated}
-                      compact={viewMode === 'list'}
-                    />
+                    viewMode === 'list' ? (
+                      <div key={client.label} className="flex items-start gap-3">
+                        <Checkbox
+                          checked={selectedClients.has(client.label)}
+                          onCheckedChange={() => toggleClientSelection(client.label)}
+                          className="mt-3"
+                        />
+                        <div className="flex-1">
+                          <ClientCard
+                            client={client}
+                            onClientUpdated={handleClientUpdated}
+                            onProjectAdded={handleProjectAdded}
+                            onDescriptionUpdated={handleDescriptionUpdated}
+                            compact={true}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <ClientCard
+                        key={client.label}
+                        client={client}
+                        onClientUpdated={handleClientUpdated}
+                        onProjectAdded={handleProjectAdded}
+                        onDescriptionUpdated={handleDescriptionUpdated}
+                        compact={false}
+                      />
+                    )
                   ))}
                 </div>
               )}

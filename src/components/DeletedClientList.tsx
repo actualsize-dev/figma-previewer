@@ -6,6 +6,7 @@ import { Grid3x3, List, Folder } from 'lucide-react';
 import { getCategoryColor } from '@/utils/categoryColors';
 import { useToast } from '@/contexts/ToastContext';
 import SelectiveRestoreModal from './SelectiveRestoreModal';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type DeletedClient = {
   label: string;
@@ -284,11 +285,9 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
       {/* Select all checkbox (list view only) */}
       {viewMode === 'list' && filteredClients.length > 0 && (
         <div className="bg-muted/30 rounded-lg px-4 py-2 flex items-center gap-3">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={selectedClients.size === filteredClients.length && filteredClients.length > 0}
-            onChange={toggleSelectAll}
-            className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer"
+            onCheckedChange={toggleSelectAll}
           />
           <label className="text-sm text-muted-foreground cursor-pointer" onClick={toggleSelectAll}>
             Select all clients
@@ -317,11 +316,10 @@ export default function DeletedClientList({ initialDeletedClients }: DeletedClie
                 {viewMode === 'list' ? (
                   // Compact list view
                   <div className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={selectedClients.has(client.label)}
-                      onChange={() => toggleClientSelection(client.label)}
-                      className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer mt-3"
+                      onCheckedChange={() => toggleClientSelection(client.label)}
+                      className="mt-3"
                     />
                     <div className="bg-card border border-border rounded-lg px-4 py-3 transition-all hover:shadow-sm hover:border-foreground/20 overflow-hidden flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">

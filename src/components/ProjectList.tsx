@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ProjectCard from './ProjectCard';
 import { useToast } from '@/contexts/ToastContext';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type Project = {
   id: string;
@@ -149,11 +150,9 @@ export default function ProjectList({ initialProjects, viewMode = 'grid' }: Proj
       {/* Select all checkbox (list view only) */}
       {viewMode === 'list' && projects.length > 0 && (
         <div className="bg-muted/30 rounded-lg px-4 py-2 flex items-center gap-3">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={selectedProjects.size === projects.length && projects.length > 0}
-            onChange={toggleSelectAll}
-            className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer"
+            onCheckedChange={toggleSelectAll}
           />
           <label className="text-sm text-muted-foreground cursor-pointer" onClick={toggleSelectAll}>
             Select all projects
@@ -178,11 +177,10 @@ export default function ProjectList({ initialProjects, viewMode = 'grid' }: Proj
               className={viewMode === 'list' ? 'flex items-start gap-3' : ''}
             >
               {viewMode === 'list' && (
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={selectedProjects.has(project.id)}
-                  onChange={() => toggleProjectSelection(project.id)}
-                  className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary cursor-pointer mt-3"
+                  onCheckedChange={() => toggleProjectSelection(project.id)}
+                  className="mt-3"
                 />
               )}
               <div className="flex-1">
