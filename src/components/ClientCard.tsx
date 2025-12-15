@@ -28,7 +28,6 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
   const [clickCount, setClickCount] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const [showDescriptionInput, setShowDescriptionInput] = useState(false);
   const { showToast } = useToast();
 
   const handleDelete = async () => {
@@ -140,48 +139,24 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
                 {client.projectCount} {client.projectCount === 1 ? 'project' : 'projects'}
               </span>
             </div>
-            {showDescriptionInput ? (
-              <div className="mt-2">
-                <InlineEdit
-                  value={client.description || ''}
-                  onSave={async (newValue) => {
-                    await handleDescriptionUpdate(newValue);
-                    setShowDescriptionInput(false);
-                  }}
-                  className="text-xs text-muted-foreground"
-                  inputClassName="text-xs"
-                  placeholder="Add description..."
-                  multiline
-                />
-              </div>
-            ) : client.description ? (
-              <div className="mt-2">
-                <div className={`text-xs text-muted-foreground whitespace-pre-wrap ${!isDescriptionExpanded ? 'line-clamp-1' : ''}`}>
-                  {client.description}
-                </div>
-                <div className="flex items-center gap-3 mt-1">
-                  <button
-                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                    className="text-xs text-primary hover:underline"
-                  >
-                    {isDescriptionExpanded ? 'Show less' : 'Show more'}
-                  </button>
-                  <button
-                    onClick={() => setShowDescriptionInput(true)}
-                    className="text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    Edit
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={() => setShowDescriptionInput(true)}
-                className="text-xs text-muted-foreground hover:text-foreground mt-1"
-              >
-                + Add description
-              </button>
-            )}
+            <div className="mt-2">
+              <InlineEdit
+                value={client.description || ''}
+                onSave={handleDescriptionUpdate}
+                className={`text-xs text-muted-foreground ${!isDescriptionExpanded ? 'line-clamp-1' : ''}`}
+                inputClassName="text-xs"
+                placeholder="Click to add description..."
+                multiline
+              />
+              {client.description && (
+                <button
+                  onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                  className="text-xs text-primary hover:underline mt-1"
+                >
+                  {isDescriptionExpanded ? 'Show less' : 'Show more'}
+                </button>
+              )}
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:flex-shrink-0 w-full sm:w-auto">
             <button
@@ -243,44 +218,20 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
             />
           </div>
           <div className="mt-3 ml-13">
-            {showDescriptionInput ? (
-              <InlineEdit
-                value={client.description || ''}
-                onSave={async (newValue) => {
-                  await handleDescriptionUpdate(newValue);
-                  setShowDescriptionInput(false);
-                }}
-                className="text-sm text-muted-foreground"
-                inputClassName="text-sm"
-                placeholder="Add description..."
-                multiline
-              />
-            ) : client.description ? (
-              <div>
-                <div className={`text-sm text-muted-foreground whitespace-pre-wrap ${!isDescriptionExpanded ? 'line-clamp-3' : ''}`}>
-                  {client.description}
-                </div>
-                <div className="flex items-center gap-3 mt-2">
-                  <button
-                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    {isDescriptionExpanded ? 'Show less' : 'Show more'}
-                  </button>
-                  <button
-                    onClick={() => setShowDescriptionInput(true)}
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Edit
-                  </button>
-                </div>
-              </div>
-            ) : (
+            <InlineEdit
+              value={client.description || ''}
+              onSave={handleDescriptionUpdate}
+              className={`text-sm text-muted-foreground ${!isDescriptionExpanded ? 'line-clamp-3' : ''}`}
+              inputClassName="text-sm"
+              placeholder="Click to add description..."
+              multiline
+            />
+            {client.description && (
               <button
-                onClick={() => setShowDescriptionInput(true)}
-                className="text-sm text-muted-foreground hover:text-foreground border border-dashed border-border rounded px-3 py-2 w-full text-left transition-colors hover:border-foreground/50"
+                onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                className="text-sm text-primary hover:underline mt-2"
               >
-                + Click to add description
+                {isDescriptionExpanded ? 'Show less' : 'Show more'}
               </button>
             )}
           </div>
