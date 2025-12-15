@@ -465,9 +465,10 @@ export default function DeletedProjectList({ initialDeletedProjects }: DeletedPr
               </div>
             )}
           </motion.div>
-        ))}
-      </AnimatePresence>
-    </div>
+            );
+          })}
+        </AnimatePresence>
+      </div>
 
       {filteredProjects.length === 0 && deletedProjects.length > 0 && (
         <div className="text-center py-8">
