@@ -40,12 +40,12 @@ export default function ProjectViewsChart({
 
   return (
     <Card>
-      <CardHeader className="flex flex-col space-y-0 border-b pb-4">
+      <CardHeader className="flex flex-col space-y-0 border-b border-border pb-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg">{projectName}</CardTitle>
             <CardDescription className="mt-1">
-              {clientLabel} • actualsize.digital/{projectSlug}
+              {clientLabel} • figma-previewer.vercel.app/{projectSlug}
             </CardDescription>
           </div>
           <div className="text-right">
