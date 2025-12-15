@@ -116,16 +116,16 @@ export default function InlineEdit({
   return (
     <button
       onClick={() => setIsEditing(true)}
-      className={`text-left hover:bg-gray-100 rounded px-1 py-1 transition-colors group ${className}`}
+      className={`text-left hover:bg-gray-100 rounded px-1 py-1 transition-colors group block ${className}`}
       title="Click to edit"
     >
       {value ? (
-        <>
-          <span className="group-hover:text-blue-600 whitespace-pre-wrap">{value}</span>
+        <span className="group-hover:text-blue-600 whitespace-pre-wrap">
+          {value}
           <svg className="w-3 h-3 inline ml-1 opacity-0 group-hover:opacity-50 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
-        </>
+        </span>
       ) : (
         <span className="text-muted-foreground italic group-hover:text-blue-600">{placeholder}</span>
       )}
