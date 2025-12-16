@@ -17,6 +17,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/components/ui/chart';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { getCategoryColor } from '@/utils/categoryColors';
 
 interface ProjectAnalytics {
@@ -195,28 +196,27 @@ export default function CombinedProjectViewsChart({
               <CardTitle className="text-lg">
                 {viewMode === 'project' ? 'Project' : 'Client'} Views Over Time
               </CardTitle>
-              <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-                <button
-                  onClick={() => setViewMode('project')}
-                  className={`text-xs px-3 py-1 rounded transition-colors ${
-                    viewMode === 'project'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
+              <ToggleGroup
+                type="single"
+                value={viewMode}
+                onValueChange={(value) => {
+                  if (value) setViewMode(value as 'project' | 'client');
+                }}
+                className="bg-muted rounded-lg p-1"
+              >
+                <ToggleGroupItem
+                  value="project"
+                  className="text-xs px-3 py-1 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                 >
                   By Project
-                </button>
-                <button
-                  onClick={() => setViewMode('client')}
-                  className={`text-xs px-3 py-1 rounded transition-colors ${
-                    viewMode === 'client'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="client"
+                  className="text-xs px-3 py-1 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                 >
                   By Client
-                </button>
-              </div>
+                </ToggleGroupItem>
+              </ToggleGroup>
             </div>
             <CardDescription>
               Showing views for the last {dateRange.days} days
