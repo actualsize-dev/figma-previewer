@@ -226,7 +226,7 @@ export default function ProjectsWithGrouping({ projects, initialSelectedClient }
                       placeholder="Client category name..."
                     />
                   )}
-                  <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md">
+                  <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md whitespace-nowrap">
                     {projectsByClient[client].length} project{projectsByClient[client].length !== 1 ? 's' : ''}
                   </span>
                 </div>
@@ -268,7 +268,7 @@ export default function ProjectsWithGrouping({ projects, initialSelectedClient }
         <div className="flex items-center justify-between pb-4 border-b border-border">
           <div className="flex items-center space-x-3">
             <h2 className="text-lg font-semibold text-foreground">{selectedClient}</h2>
-            <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md">
+            <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md whitespace-nowrap">
               {displayedProjects.length} project{displayedProjects.length !== 1 ? 's' : ''}
             </span>
           </div>
