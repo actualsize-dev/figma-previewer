@@ -80,6 +80,13 @@
   --ds-outline-hover: #2a2a2a;
   --ds-card-hover-border: #606060;
   --radius: 6px;
+
+  /* Chart colors */
+  --chart-1: var(--ds-blue-500);
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #ec4899;
 }
 
 /* Light mode override (if explicitly requested) */
@@ -136,6 +143,13 @@
   --border: var(--ds-border-4);
   --card: var(--ds-background-100);
   --card-foreground: var(--ds-text-10);
+
+  /* Chart colors */
+  --chart-1: var(--ds-blue-500);
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #ec4899;
 }
 
 /* Removed media query - dark mode is now the default for all users */

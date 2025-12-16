@@ -7,6 +7,7 @@ import ShareLinksManager from './ShareLinksManager';
 import AddProjectModal from './AddProjectModal';
 import { Folder, ExternalLink, Plus } from 'lucide-react';
 import { useToast } from '@/contexts/ToastContext';
+import { getCategoryColor } from '@/utils/categoryColors';
 
 type Client = {
   label: string;
@@ -201,13 +202,15 @@ export default function ClientCard({ client, onClientUpdated, onProjectAdded, on
     );
   }
 
+  const colors = getCategoryColor(currentLabel);
+
   return (
     <div className="bg-card border border-border rounded-lg p-6 transition-all hover:shadow-sm">
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 mr-4">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
-              <Folder className="w-5 h-5 text-muted-foreground" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.bg }}>
+              <Folder className="w-5 h-5" style={{ color: colors.text }} />
             </div>
             <InlineEdit
               value={currentLabel}

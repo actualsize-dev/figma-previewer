@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const ipAddress = forwarded ? forwarded.split(',')[0] : undefined;
 
     // Create view record
-    await prisma.projectView.create({
+    const view = await prisma.projectView.create({
       data: {
         projectId,
         projectSlug,
@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
         ipAddress,
       },
     });
+
+    console.log('View tracked:', { projectSlug, projectId, viewId: view.id });
 
     return NextResponse.json({ success: true });
   } catch (error) {

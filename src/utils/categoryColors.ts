@@ -7,24 +7,31 @@ export const categoryColors = [
   { bg: 'var(--ds-category-teal-bg)', text: 'var(--ds-category-teal-text)' },
 ];
 
-// Cache to ensure consistent color assignment
+// Cache to ensure consistent and unique color assignment
 const categoryColorMap = new Map<string, number>();
-let colorIndex = 0;
+const knownCategories: string[] = [];
 
 export function getCategoryColor(category: string): { bg: string; text: string } {
   // Normalize category name for consistent mapping
   const normalizedCategory = category.toLowerCase().trim();
-  
-  // If we've seen this category before, return the same color
+
+  // If we've seen this category before, return the cached color
   if (categoryColorMap.has(normalizedCategory)) {
     const index = categoryColorMap.get(normalizedCategory)!;
     return categoryColors[index];
   }
-  
-  // Assign a new color and cycle through available colors
-  const assignedIndex = colorIndex % categoryColors.length;
-  categoryColorMap.set(normalizedCategory, assignedIndex);
-  colorIndex++;
-  
-  return categoryColors[assignedIndex];
+
+  // Add new category and sort the list to maintain consistent ordering
+  knownCategories.push(normalizedCategory);
+  knownCategories.sort();
+
+  // Reassign colors based on sorted order to ensure consistency
+  categoryColorMap.clear();
+  knownCategories.forEach((cat, idx) => {
+    categoryColorMap.set(cat, idx % categoryColors.length);
+  });
+
+  // Return the color for this category
+  const index = categoryColorMap.get(normalizedCategory)!;
+  return categoryColors[index];
 }

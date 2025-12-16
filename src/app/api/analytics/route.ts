@@ -50,6 +50,18 @@ export async function GET(request: NextRequest) {
       ORDER BY date ASC
     `;
 
+    // Get unique viewer count (based on unique IP addresses)
+    const uniqueViewers = await prisma.$queryRaw<Array<{
+      unique_count: bigint;
+    }>>`
+      SELECT COUNT(DISTINCT ip_address) as unique_count
+      FROM project_views
+      WHERE viewed_at >= ${startDate}
+        AND ip_address IS NOT NULL
+    `;
+
+    const uniqueViewerCount = Number(uniqueViewers[0]?.unique_count || 0);
+
     // Transform the data into a structure suitable for the frontend
     const projectAnalytics = projects.map(project => {
       const projectViews = views
@@ -86,14 +98,25 @@ export async function GET(request: NextRequest) {
     // Sort by total views descending
     projectAnalytics.sort((a, b) => b.totalViews - a.totalViews);
 
-    return NextResponse.json({
+    const response = {
       projects: projectAnalytics,
       dateRange: {
         start: startDate.toISOString().split('T')[0],
         end: new Date().toISOString().split('T')[0],
         days,
       },
+      uniqueViewers: uniqueViewerCount,
+    };
+
+    console.log('Analytics API Response:', {
+      totalProjects: response.projects.length,
+      totalViews: response.projects.reduce((sum, p) => sum + p.totalViews, 0),
+      projectsWithViews: response.projects.filter(p => p.totalViews > 0).length,
+      uniqueViewers: uniqueViewerCount,
+      rawViewCount: views.length,
     });
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching analytics:', error);
     return NextResponse.json(

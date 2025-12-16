@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Header from '@/components/Header';
-import ProjectViewsChart from '@/components/ProjectViewsChart';
+import CombinedProjectViewsChart from '@/components/CombinedProjectViewsChart';
 import {
   Select,
   SelectContent,
@@ -30,6 +30,7 @@ type AnalyticsData = {
     end: string;
     days: number;
   };
+  uniqueViewers: number;
 };
 
 export default function InsightsPage() {
@@ -37,7 +38,7 @@ export default function InsightsPage() {
   const { data: session, status } = useSession();
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState('90');
+  const [timeRange, setTimeRange] = useState('7');
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -57,6 +58,7 @@ export default function InsightsPage() {
       const response = await fetch(`/api/analytics?days=${timeRange}`);
       if (!response.ok) throw new Error('Failed to fetch analytics');
       const data = await response.json();
+      console.log('Analytics data:', data);
       setAnalytics(data);
     } catch (error) {
       console.error('Error fetching analytics:', error);
@@ -82,6 +84,7 @@ export default function InsightsPage() {
   }
 
   const totalAllViews = analytics?.projects.reduce((sum, p) => sum + p.totalViews, 0) || 0;
+  const totalProjects = analytics?.projects.length || 0;
   const projectsWithViews = analytics?.projects.filter(p => p.totalViews > 0) || [];
 
   return (
@@ -118,49 +121,45 @@ export default function InsightsPage() {
           </div>
 
           {/* Summary Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-card border border-border rounded-lg p-4">
               <div className="text-sm text-muted-foreground mb-1">Total Views</div>
               <div className="text-3xl font-bold text-foreground">{totalAllViews.toLocaleString()}</div>
             </div>
             <div className="bg-card border border-border rounded-lg p-4">
+              <div className="text-sm text-muted-foreground mb-1">Unique Viewers</div>
+              <div className="text-3xl font-bold text-foreground">{analytics?.uniqueViewers?.toLocaleString() || 0}</div>
+            </div>
+            <div className="bg-card border border-border rounded-lg p-4">
               <div className="text-sm text-muted-foreground mb-1">Active Projects</div>
-              <div className="text-3xl font-bold text-foreground">{projectsWithViews.length}</div>
+              <div className="text-3xl font-bold text-foreground">{totalProjects}</div>
             </div>
             <div className="bg-card border border-border rounded-lg p-4">
               <div className="text-sm text-muted-foreground mb-1">Avg Views per Project</div>
               <div className="text-3xl font-bold text-foreground">
-                {projectsWithViews.length > 0
-                  ? Math.round(totalAllViews / projectsWithViews.length).toLocaleString()
+                {totalProjects > 0
+                  ? Math.round(totalAllViews / totalProjects).toLocaleString()
                   : 0}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Charts */}
-        <div className="space-y-6">
-          {analytics && analytics.projects.length > 0 ? (
-            analytics.projects.map((project) => (
-              <ProjectViewsChart
-                key={project.projectId}
-                projectName={project.projectName}
-                projectSlug={project.projectSlug}
-                clientLabel={project.clientLabel}
-                data={project.views}
-                totalViews={project.totalViews}
-              />
-            ))
-          ) : (
-            <div className="bg-card border border-border rounded-lg p-12 text-center">
-              <BarChart3 className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No Analytics Data</h3>
-              <p className="text-muted-foreground">
-                No project views have been recorded yet. Start sharing your projects to see analytics here.
-              </p>
-            </div>
-          )}
-        </div>
+        {/* Combined Chart */}
+        {analytics && analytics.projects.length > 0 ? (
+          <CombinedProjectViewsChart
+            projects={analytics.projects}
+            dateRange={analytics.dateRange}
+          />
+        ) : (
+          <div className="bg-card border border-border rounded-lg p-12 text-center">
+            <BarChart3 className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">No Analytics Data</h3>
+            <p className="text-muted-foreground">
+              No project views have been recorded yet. Start sharing your projects to see analytics here.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
