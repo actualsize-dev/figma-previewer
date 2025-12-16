@@ -268,7 +268,7 @@ export default function CombinedProjectViewsChart({
             <ChartLegend
               content={
                 <ChartLegendContent
-                  onClick={(e) => {
+                  onClick={(e: any) => {
                     const projectId = Object.keys(chartConfig).find(
                       (key) => chartConfig[key].label === e.value
                     );
