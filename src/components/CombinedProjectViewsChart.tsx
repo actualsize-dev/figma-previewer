@@ -318,7 +318,9 @@ export default function CombinedProjectViewsChart({
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
-                const date = new Date(value);
+                // Parse as local date to avoid timezone conversion
+                const [year, month, day] = value.split('-').map(Number);
+                const date = new Date(year, month - 1, day);
                 return date.toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
@@ -337,10 +339,14 @@ export default function CombinedProjectViewsChart({
               content={({ active, payload, label }) => {
                 if (!active || !payload?.length) return null;
 
+                // Parse as local date to avoid timezone conversion
+                const [year, month, day] = label.split('-').map(Number);
+                const date = new Date(year, month - 1, day);
+
                 return (
                   <div className="bg-background border border-border rounded-lg shadow-lg p-3">
                     <p className="text-sm text-muted-foreground mb-2">
-                      {new Date(label).toLocaleDateString('en-US', {
+                      {date.toLocaleDateString('en-US', {
                         weekday: 'short',
                         month: 'short',
                         day: 'numeric',
