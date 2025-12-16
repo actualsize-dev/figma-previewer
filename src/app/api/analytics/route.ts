@@ -14,9 +14,11 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const days = parseInt(searchParams.get('days') || '90');
 
-    // Calculate the start date
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
+    // Calculate dates in UTC to ensure consistency
+    const now = new Date();
+    const endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const startDate = new Date(endDate);
+    startDate.setUTCDate(startDate.getUTCDate() - days + 1);
 
     // Get all projects
     const projects = await prisma.project.findMany({
@@ -76,8 +78,8 @@ export async function GET(request: NextRequest) {
       const allDates: Array<{ date: string; views: number }> = [];
 
       for (let i = 0; i < days; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() - (days - 1 - i));
+        const date = new Date(startDate);
+        date.setUTCDate(date.getUTCDate() + i);
         const dateStr = date.toISOString().split('T')[0];
         allDates.push({
           date: dateStr,
@@ -102,7 +104,7 @@ export async function GET(request: NextRequest) {
       projects: projectAnalytics,
       dateRange: {
         start: startDate.toISOString().split('T')[0],
-        end: new Date().toISOString().split('T')[0],
+        end: endDate.toISOString().split('T')[0],
         days,
       },
       uniqueViewers: uniqueViewerCount,
