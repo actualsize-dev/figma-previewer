@@ -70,52 +70,115 @@ export default function CombinedProjectViewsChart({
   projects,
   dateRange,
 }: CombinedProjectViewsChartProps) {
-  const [visibleProjects, setVisibleProjects] = React.useState<Set<string>>(
+  const [viewMode, setViewMode] = React.useState<'project' | 'client'>('project');
+  const [visibleItems, setVisibleItems] = React.useState<Set<string>>(
     new Set(projects.map((p) => p.projectId))
   );
 
-  // Transform data: merge all projects into single dataset by date
+  // Aggregate data by client
+  const clientData = React.useMemo(() => {
+    const clientMap = new Map<string, {
+      clientLabel: string;
+      views: Array<{ date: string; views: number }>;
+      totalViews: number;
+    }>();
+
+    projects.forEach((project) => {
+      if (!clientMap.has(project.clientLabel)) {
+        // Initialize client data with same structure as projects
+        const emptyViews = project.views.map(v => ({ date: v.date, views: 0 }));
+        clientMap.set(project.clientLabel, {
+          clientLabel: project.clientLabel,
+          views: emptyViews,
+          totalViews: 0,
+        });
+      }
+
+      const client = clientMap.get(project.clientLabel)!;
+      // Aggregate views by date
+      project.views.forEach((view, idx) => {
+        client.views[idx].views += view.views;
+      });
+      client.totalViews += project.totalViews;
+    });
+
+    return Array.from(clientMap.values());
+  }, [projects]);
+
+  // Reset visible items when view mode changes
+  React.useEffect(() => {
+    if (viewMode === 'project') {
+      setVisibleItems(new Set(projects.map((p) => p.projectId)));
+    } else {
+      setVisibleItems(new Set(clientData.map((c) => c.clientLabel)));
+    }
+  }, [viewMode, projects, clientData]);
+
+  // Transform data: merge all items into single dataset by date
   const chartData = React.useMemo(() => {
     const dataByDate = new Map<string, any>();
 
+    const items = viewMode === 'project' ? projects : clientData;
+
     // Initialize all dates
-    projects[0]?.views.forEach((v) => {
+    items[0]?.views.forEach((v) => {
       dataByDate.set(v.date, { date: v.date });
     });
 
-    // Add each project's views
-    projects.forEach((project) => {
-      project.views.forEach((v) => {
-        const entry = dataByDate.get(v.date);
-        if (entry) {
-          entry[project.projectId] = v.views;
-        }
+    // Add each item's views
+    if (viewMode === 'project') {
+      projects.forEach((project) => {
+        project.views.forEach((v) => {
+          const entry = dataByDate.get(v.date);
+          if (entry) {
+            entry[project.projectId] = v.views;
+          }
+        });
       });
-    });
+    } else {
+      clientData.forEach((client) => {
+        client.views.forEach((v) => {
+          const entry = dataByDate.get(v.date);
+          if (entry) {
+            entry[client.clientLabel] = v.views;
+          }
+        });
+      });
+    }
 
     return Array.from(dataByDate.values());
-  }, [projects]);
+  }, [projects, clientData, viewMode]);
 
   // Build chart config dynamically
   const chartConfig = React.useMemo(() => {
     const config: ChartConfig = {};
-    projects.forEach((project) => {
-      const colors = getClientColors(project.clientLabel);
-      config[project.projectId] = {
-        label: project.projectName,
-        color: colors.stroke,
-      };
-    });
+    if (viewMode === 'project') {
+      projects.forEach((project) => {
+        const colors = getClientColors(project.clientLabel);
+        config[project.projectId] = {
+          label: project.projectName,
+          color: colors.stroke,
+        };
+      });
+    } else {
+      clientData.forEach((client) => {
+        const colors = getClientColors(client.clientLabel);
+        config[client.clientLabel] = {
+          label: client.clientLabel,
+          color: colors.stroke,
+        };
+      });
+    }
     return config;
-  }, [projects]);
+  }, [projects, clientData, viewMode]);
 
-  const toggleProject = (projectId: string) => {
-    setVisibleProjects((prev) => {
+  const toggleItem = (itemId: string) => {
+    setVisibleItems((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(projectId)) {
-        newSet.delete(projectId);
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId);
       } else {
-        newSet.add(projectId);
+        newSet.add(itemId);
       }
       return newSet;
     });
@@ -128,8 +191,34 @@ export default function CombinedProjectViewsChart({
       <CardHeader className="flex flex-col space-y-0 border-b border-border pb-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle className="text-lg">Project Views Over Time</CardTitle>
-            <CardDescription className="mt-1">
+            <div className="flex items-center gap-3 mb-2">
+              <CardTitle className="text-lg">
+                {viewMode === 'project' ? 'Project' : 'Client'} Views Over Time
+              </CardTitle>
+              <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode('project')}
+                  className={`text-xs px-3 py-1 rounded transition-colors ${
+                    viewMode === 'project'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  By Project
+                </button>
+                <button
+                  onClick={() => setViewMode('client')}
+                  className={`text-xs px-3 py-1 rounded transition-colors ${
+                    viewMode === 'client'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  By Client
+                </button>
+              </div>
+            </div>
+            <CardDescription>
               Showing views for the last {dateRange.days} days
             </CardDescription>
           </div>
@@ -149,40 +238,77 @@ export default function CombinedProjectViewsChart({
             margin={{ top: 30, right: 30, bottom: 80, left: 30 }}
           >
             <defs>
-              {projects.map((project) => {
-                const colors = getClientColors(project.clientLabel);
-                return (
-                  <linearGradient
-                    key={project.projectId}
-                    id={`fill-${project.projectId}`}
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop
-                      offset="0%"
-                      stopColor={colors.fill}
-                      stopOpacity={1}
-                    />
-                    <stop
-                      offset="15%"
-                      stopColor={colors.fill}
-                      stopOpacity={1}
-                    />
-                    <stop
-                      offset="60%"
-                      stopColor={colors.fill}
-                      stopOpacity={0.3}
-                    />
-                    <stop
-                      offset="100%"
-                      stopColor={colors.fill}
-                      stopOpacity={0.02}
-                    />
-                  </linearGradient>
-                );
-              })}
+              {viewMode === 'project' ? (
+                projects.map((project) => {
+                  const colors = getClientColors(project.clientLabel);
+                  return (
+                    <linearGradient
+                      key={project.projectId}
+                      id={`fill-${project.projectId}`}
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="0%"
+                        stopColor={colors.fill}
+                        stopOpacity={1}
+                      />
+                      <stop
+                        offset="15%"
+                        stopColor={colors.fill}
+                        stopOpacity={1}
+                      />
+                      <stop
+                        offset="60%"
+                        stopColor={colors.fill}
+                        stopOpacity={0.3}
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor={colors.fill}
+                        stopOpacity={0.02}
+                      />
+                    </linearGradient>
+                  );
+                })
+              ) : (
+                clientData.map((client) => {
+                  const colors = getClientColors(client.clientLabel);
+                  return (
+                    <linearGradient
+                      key={client.clientLabel}
+                      id={`fill-${client.clientLabel}`}
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="0%"
+                        stopColor={colors.fill}
+                        stopOpacity={1}
+                      />
+                      <stop
+                        offset="15%"
+                        stopColor={colors.fill}
+                        stopOpacity={1}
+                      />
+                      <stop
+                        offset="60%"
+                        stopColor={colors.fill}
+                        stopOpacity={0.3}
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor={colors.fill}
+                        stopOpacity={0.02}
+                      />
+                    </linearGradient>
+                  );
+                })
+              )}
             </defs>
             <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
             <XAxis
@@ -223,8 +349,13 @@ export default function CombinedProjectViewsChart({
                     </p>
                     <div className="space-y-1">
                       {payload.map((entry: any) => {
-                        const project = projects.find(p => p.projectId === entry.dataKey);
-                        const displayName = project?.projectName || String(entry.dataKey);
+                        let displayName: string;
+                        if (viewMode === 'project') {
+                          const project = projects.find(p => p.projectId === entry.dataKey);
+                          displayName = project?.projectName || String(entry.dataKey);
+                        } else {
+                          displayName = String(entry.dataKey);
+                        }
                         const truncated = displayName.length > 20
                           ? displayName.substring(0, 20) + '...'
                           : displayName;
@@ -249,31 +380,50 @@ export default function CombinedProjectViewsChart({
                 );
               }}
             />
-            {projects.map((project) => {
-              if (!visibleProjects.has(project.projectId)) return null;
-              const colors = getClientColors(project.clientLabel);
-              return (
-                <Area
-                  key={project.projectId}
-                  dataKey={project.projectId}
-                  type="monotone"
-                  fill={`url(#fill-${project.projectId})`}
-                  stroke={colors.stroke}
-                  strokeWidth={2}
-                  fillOpacity={0.4}
-                  baseValue={0}
-                />
-              );
-            })}
+            {viewMode === 'project' ? (
+              projects.map((project) => {
+                if (!visibleItems.has(project.projectId)) return null;
+                const colors = getClientColors(project.clientLabel);
+                return (
+                  <Area
+                    key={project.projectId}
+                    dataKey={project.projectId}
+                    type="monotone"
+                    fill={`url(#fill-${project.projectId})`}
+                    stroke={colors.stroke}
+                    strokeWidth={2}
+                    fillOpacity={0.4}
+                    baseValue={0}
+                  />
+                );
+              })
+            ) : (
+              clientData.map((client) => {
+                if (!visibleItems.has(client.clientLabel)) return null;
+                const colors = getClientColors(client.clientLabel);
+                return (
+                  <Area
+                    key={client.clientLabel}
+                    dataKey={client.clientLabel}
+                    type="monotone"
+                    fill={`url(#fill-${client.clientLabel})`}
+                    stroke={colors.stroke}
+                    strokeWidth={2}
+                    fillOpacity={0.4}
+                    baseValue={0}
+                  />
+                );
+              })
+            )}
             <ChartLegend
               content={
                 <ChartLegendContent
                   onClick={(e: any) => {
-                    const projectId = Object.keys(chartConfig).find(
+                    const itemId = Object.keys(chartConfig).find(
                       (key) => chartConfig[key].label === e.value
                     );
-                    if (projectId) {
-                      toggleProject(projectId);
+                    if (itemId) {
+                      toggleItem(itemId);
                     }
                   }}
                 />
@@ -282,34 +432,66 @@ export default function CombinedProjectViewsChart({
           </AreaChart>
         </ChartContainer>
 
-        {/* Project Details */}
+        {/* Item Details */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {projects.map((project) => {
-            const colors = getClientColors(project.clientLabel);
-            return (
-              <button
-                key={project.projectId}
-                onClick={() => toggleProject(project.projectId)}
-                className={`text-left p-3 rounded-lg border transition-all ${
-                  visibleProjects.has(project.projectId)
-                    ? 'border-border bg-card hover:border-primary/50'
-                    : 'border-border bg-muted/50 opacity-50 hover:opacity-70'
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: colors.stroke }}
-                  />
-                  <div className="text-sm font-medium text-foreground truncate">
-                    {project.projectName}
+          {viewMode === 'project' ? (
+            projects.map((project) => {
+              const colors = getClientColors(project.clientLabel);
+              return (
+                <button
+                  key={project.projectId}
+                  onClick={() => toggleItem(project.projectId)}
+                  className={`text-left p-3 rounded-lg border transition-all ${
+                    visibleItems.has(project.projectId)
+                      ? 'border-border bg-card hover:border-primary/50'
+                      : 'border-border bg-muted/50 opacity-50 hover:opacity-70'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: colors.stroke }}
+                    />
+                    <div className="text-sm font-medium text-foreground truncate">
+                      {project.projectName}
+                    </div>
                   </div>
-                </div>
-                <div className="text-xs text-muted-foreground mb-1">{project.clientLabel}</div>
-                <div className="text-lg font-bold text-foreground">{project.totalViews.toLocaleString()} views</div>
-              </button>
-            );
-          })}
+                  <div className="text-xs text-muted-foreground mb-1">{project.clientLabel}</div>
+                  <div className="text-lg font-bold text-foreground">{project.totalViews.toLocaleString()} views</div>
+                </button>
+              );
+            })
+          ) : (
+            clientData.map((client) => {
+              const colors = getClientColors(client.clientLabel);
+              const projectCount = projects.filter(p => p.clientLabel === client.clientLabel).length;
+              return (
+                <button
+                  key={client.clientLabel}
+                  onClick={() => toggleItem(client.clientLabel)}
+                  className={`text-left p-3 rounded-lg border transition-all ${
+                    visibleItems.has(client.clientLabel)
+                      ? 'border-border bg-card hover:border-primary/50'
+                      : 'border-border bg-muted/50 opacity-50 hover:opacity-70'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: colors.stroke }}
+                    />
+                    <div className="text-sm font-medium text-foreground truncate">
+                      {client.clientLabel}
+                    </div>
+                  </div>
+                  <div className="text-xs text-muted-foreground mb-1">
+                    {projectCount} project{projectCount !== 1 ? 's' : ''}
+                  </div>
+                  <div className="text-lg font-bold text-foreground">{client.totalViews.toLocaleString()} views</div>
+                </button>
+              );
+            })
+          )}
         </div>
       </CardContent>
     </Card>
