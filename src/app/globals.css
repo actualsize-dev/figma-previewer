@@ -77,6 +77,8 @@
   --accent-foreground: var(--ds-text-10);
   --card: var(--ds-background-100);
   --card-foreground: var(--ds-text-10);
+  --popover: var(--ds-background-100);
+  --popover-foreground: var(--ds-text-10);
   --ds-outline-hover: #2a2a2a;
   --ds-card-hover-border: #606060;
   --radius: 6px;
@@ -143,6 +145,8 @@
   --border: var(--ds-border-4);
   --card: var(--ds-background-100);
   --card-foreground: var(--ds-text-10);
+  --popover: var(--ds-background-100);
+  --popover-foreground: var(--ds-text-10);
 
   /* Chart colors */
   --chart-1: var(--ds-blue-500);
